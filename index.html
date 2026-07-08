@@ -1,0 +1,2365 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Soltex — Énergie Solaire Madagascar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#060E1F;
+  --navy2:#0D1B35;
+  --blue:#1B4FDB;
+  --blue2:#2563EB;
+  --blue3:#3B82F6;
+  --gold:#F59E0B;
+  --gold2:#FCD34D;
+  --green:#10B981;
+  --red:#EF4444;
+  --white:#FFFFFF;
+  --g50:#F8FAFC;
+  --g100:#F1F5F9;
+  --g200:#E2E8F0;
+  --g400:#94A3B8;
+  --g600:#475569;
+  --g800:#1E293B;
+  --r:16px;
+  --shadow:0 4px 24px rgba(0,0,0,.08);
+  --shadow-lg:0 16px 48px rgba(0,0,0,.14);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--white);color:var(--g800);overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+img{max-width:100%}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--g100)}
+::-webkit-scrollbar-thumb{background:var(--g200);border-radius:3px}
+
+/* ══════════════════════════════
+   NAVBAR
+══════════════════════════════ */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2.5rem;height:68px;
+  background:rgba(6,14,31,.92);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  transition:box-shadow .3s;
+}
+.nav.scrolled{box-shadow:0 4px 30px rgba(0,0,0,.4)}
+.nav-logo{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;font-weight:800;color:#fff;letter-spacing:-.5px}
+.nav-logo span{color:var(--gold)}
+.nav-menu{display:flex;gap:2rem;list-style:none}
+.nav-menu a{font-size:.875rem;font-weight:500;color:rgba(255,255,255,.7);transition:color .2s;cursor:pointer}
+.nav-menu a:hover,.nav-menu a.active{color:#fff}
+.nav-actions{display:flex;align-items:center;gap:.8rem}
+.nav-cart{
+  display:flex;align-items:center;gap:.5rem;
+  background:var(--blue2);color:#fff;
+  border:none;padding:.5rem 1.1rem;border-radius:10px;
+  font-size:.875rem;font-weight:600;cursor:pointer;
+  transition:background .2s,transform .15s;
+}
+.nav-fav{
+  background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);
+  color:#fff;padding:.5rem 1rem;border-radius:10px;
+  font-size:1rem;font-weight:600;cursor:pointer;
+  display:flex;align-items:center;gap:.4rem;
+  transition:.2s;position:relative;
+}
+.nav-fav:hover{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.4);color:#FCA5A5}
+.fav-badge{
+  background:var(--red);color:#fff;
+  border-radius:50%;width:18px;height:18px;
+  font-size:.68rem;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ══ FAVORIS DRAWER ══ */
+.fav-overlay{
+  position:fixed;inset:0;z-index:260;
+  background:rgba(6,14,31,.6);backdrop-filter:blur(4px);
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.fav-overlay.open{opacity:1;pointer-events:all}
+.fav-drawer{
+  position:absolute;top:0;right:0;
+  width:400px;max-width:100vw;height:100%;
+  background:#fff;display:flex;flex-direction:column;
+  box-shadow:-12px 0 48px rgba(0,0,0,.2);
+  transform:translateX(100%);
+  transition:transform .35s cubic-bezier(.4,0,.2,1);
+}
+.fav-overlay.open .fav-drawer{transform:translateX(0)}
+.fav-head{
+  background:linear-gradient(135deg,#7C3AED,#5B21B6);
+  padding:1.2rem 1.4rem;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.fav-head-title{font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;color:#fff}
+.fav-head-sub{font-size:.75rem;color:rgba(255,255,255,.6);margin-top:.1rem}
+.fav-x{
+  background:rgba(255,255,255,.15);border:none;color:#fff;
+  width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.9rem;
+  display:flex;align-items:center;justify-content:center;transition:.2s;
+}
+.fav-x:hover{background:rgba(255,255,255,.3)}
+.fav-body{flex:1;overflow-y:auto;padding:1rem}
+.fav-empty{text-align:center;padding:3rem 1rem}
+.fav-item{
+  display:flex;align-items:center;gap:.9rem;
+  padding:.9rem;background:var(--g50);border-radius:12px;
+  margin-bottom:.7rem;border:1.5px solid var(--g200);
+  transition:.2s;
+}
+.fav-item:hover{border-color:#C4B5FD}
+.fav-item-img{
+  width:52px;height:52px;flex-shrink:0;
+  border-radius:10px;overflow:hidden;background:var(--g200);
+}
+.fav-item-img img{width:100%;height:100%;object-fit:cover;display:block}
+.fav-item-info{flex:1;min-width:0}
+.fav-item-name{font-size:.85rem;font-weight:600;color:var(--g800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fav-item-price{font-size:.82rem;color:#7C3AED;font-weight:700;margin-top:.15rem}
+.fav-item-actions{display:flex;flex-direction:column;gap:.4rem;flex-shrink:0}
+.fav-to-cart{
+  background:var(--blue2);color:#fff;border:none;
+  padding:.35rem .7rem;border-radius:8px;font-size:.72rem;font-weight:700;
+  cursor:pointer;transition:.2s;white-space:nowrap;
+}
+.fav-to-cart:hover{background:var(--blue3)}
+.fav-remove{
+  background:none;border:1px solid var(--g200);color:var(--g400);
+  padding:.3rem .7rem;border-radius:8px;font-size:.72rem;cursor:pointer;transition:.2s;
+}
+.fav-remove:hover{background:#FEF2F2;border-color:#FECACA;color:var(--red)}
+.fav-foot{
+  padding:1.2rem 1.4rem;border-top:1px solid var(--g200);
+}
+.fav-add-all{
+  width:100%;background:linear-gradient(135deg,#7C3AED,#5B21B6);color:#fff;
+  border:none;padding:.9rem;border-radius:12px;
+  font-size:.95rem;font-weight:700;cursor:pointer;transition:.2s;margin-bottom:.6rem;
+}
+.fav-add-all:hover{opacity:.9;transform:translateY(-1px)}
+.fav-clear{
+  width:100%;background:transparent;border:1.5px solid var(--g200);
+  color:var(--g400);padding:.7rem;border-radius:12px;
+  font-size:.85rem;cursor:pointer;transition:.2s;
+}
+.fav-clear:hover{background:#FEF2F2;border-color:#FECACA;color:var(--red)}
+.cart-badge{
+  background:var(--gold);color:var(--navy);
+  border-radius:50%;width:20px;height:20px;
+  font-size:.7rem;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
+.hamburger span{display:block;width:24px;height:2px;background:#fff;border-radius:2px;transition:.3s}
+
+/* ══════════════════════════════
+   HERO
+══════════════════════════════ */
+.hero{
+  min-height:100vh;
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 50%,#112055 100%);
+  display:flex;align-items:center;
+  padding:6rem 2.5rem 4rem;
+  position:relative;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;pointer-events:none;
+}
+.hero-video{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;z-index:0;
+}
+.hero-video-overlay{
+  position:absolute;inset:0;z-index:1;
+  background:linear-gradient(135deg,rgba(6,14,31,.88) 0%,rgba(13,27,53,.82) 50%,rgba(17,32,85,.85) 100%);
+}
+.hero-orb{
+  position:absolute;border-radius:50%;filter:blur(80px);opacity:.25;z-index:1;
+}
+.hero-orb-1{width:600px;height:600px;background:var(--blue2);top:-200px;right:-100px}
+.hero-orb-2{width:400px;height:400px;background:#7C3AED;bottom:-100px;left:-100px}
+.hero-orb-3{width:300px;height:300px;background:var(--gold);top:40%;right:20%;opacity:.1}
+.hero-grid{
+  position:absolute;inset:0;z-index:1;
+  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+  background-size:60px 60px;
+}
+.hero-inner{
+  max-width:1200px;margin:0 auto;width:100%;
+  display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;
+  position:relative;z-index:2;
+}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);
+  color:var(--gold2);font-size:.75rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:1.5px;
+  padding:.35rem 1rem;border-radius:20px;margin-bottom:1.5rem;
+}
+.hero h1{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(2.2rem,4.5vw,3.8rem);
+  font-weight:800;color:#fff;line-height:1.1;
+  margin-bottom:1.2rem;
+}
+.hero h1 .accent{
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero-desc{color:#94A3B8;font-size:1.05rem;line-height:1.7;margin-bottom:2rem;max-width:480px}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap}
+.btn-hero-primary{
+  background:linear-gradient(135deg,var(--gold),#E07D10);
+  color:var(--navy);border:none;
+  padding:.85rem 2rem;border-radius:12px;
+  font-size:1rem;font-weight:700;cursor:pointer;
+  transition:transform .2s,box-shadow .2s;
+  box-shadow:0 6px 24px rgba(245,158,11,.35);
+}
+.btn-hero-primary:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(245,158,11,.45)}
+.btn-hero-outline{
+  background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.2);
+  color:#fff;padding:.85rem 2rem;border-radius:12px;
+  font-size:1rem;font-weight:600;cursor:pointer;
+  transition:.2s;backdrop-filter:blur(8px);
+}
+.btn-hero-outline:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.4)}
+.hero-stats{display:flex;gap:2rem;margin-top:2.5rem;flex-wrap:wrap}
+.hero-stat-num{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1.8rem;font-weight:800;color:#fff;
+}
+.hero-stat-label{font-size:.78rem;color:#64748B;text-transform:uppercase;letter-spacing:.5px}
+/* hero right: solar panel visual */
+.hero-visual{
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+.hero-panel{
+  width:100%;max-width:420px;
+  background:linear-gradient(145deg,#0f2040,#1a3a6b);
+  border-radius:20px;padding:2rem;
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 32px 80px rgba(0,0,0,.5);
+  position:relative;overflow:hidden;
+}
+.hero-panel::before{
+  content:'';position:absolute;top:-40%;right:-40%;
+  width:300px;height:300px;
+  background:radial-gradient(circle,rgba(37,99,235,.25),transparent 70%);
+}
+.panel-grid{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:6px;
+  margin-bottom:1.5rem;
+}
+.panel-cell{
+  aspect-ratio:1;background:linear-gradient(135deg,#1a3a7a,#0f2460);
+  border-radius:4px;border:1px solid rgba(37,99,235,.3);
+  position:relative;overflow:hidden;
+}
+.panel-cell::after{
+  content:'';position:absolute;
+  top:0;left:-100%;width:100%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent);
+  animation:shine 3s infinite;animation-delay:calc(var(--d)*0.3s);
+}
+@keyframes shine{0%{left:-100%}100%{left:200%}}
+.panel-info{display:flex;justify-content:space-between;align-items:center}
+.panel-badge{
+  background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);
+  color:#34D399;font-size:.72rem;font-weight:700;
+  padding:.25rem .7rem;border-radius:20px;
+}
+.panel-watt{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;font-weight:700;color:#fff}
+.panel-watt span{font-size:.8rem;color:#64748B;font-weight:400}
+/* floating cards */
+.float-card{
+  position:absolute;background:rgba(255,255,255,.08);
+  backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.12);
+  border-radius:12px;padding:.7rem 1rem;
+  font-size:.78rem;font-weight:600;color:#fff;
+  animation:float 3s ease-in-out infinite;
+}
+.float-card-1{bottom:-20px;left:-30px;animation-delay:.5s}
+.float-card-2{top:-15px;right:-20px;animation-delay:1s}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* ══════════════════════════════
+   SECTION WRAPPER
+══════════════════════════════ */
+.section{max-width:1200px;margin:0 auto;padding:5rem 2rem}
+.section-header{text-align:center;margin-bottom:3rem}
+.section-tag{
+  display:inline-block;
+  background:rgba(37,99,235,.1);color:var(--blue2);
+  font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;
+  padding:.3rem 1rem;border-radius:20px;margin-bottom:.8rem;
+}
+.section-title{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;color:var(--g800);
+  margin-bottom:.6rem;
+}
+.section-sub{color:var(--g400);font-size:1rem;max-width:500px;margin:0 auto}
+
+/* ══════════════════════════════
+   FEATURES STRIP
+══════════════════════════════ */
+.features-strip{background:var(--navy);padding:3rem 2rem}
+.features-inner{
+  max-width:1200px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;
+}
+.feat-item{text-align:center}
+.feat-icon{
+  width:52px;height:52px;
+  background:rgba(37,99,235,.15);border:1px solid rgba(37,99,235,.25);
+  border-radius:14px;margin:0 auto .8rem;
+  display:flex;align-items:center;justify-content:center;font-size:1.4rem;
+}
+.feat-title{font-weight:700;color:#fff;font-size:.95rem;margin-bottom:.3rem}
+.feat-desc{font-size:.8rem;color:#64748B;line-height:1.5}
+
+/* ══════════════════════════════
+   PRODUITS BANNER
+══════════════════════════════ */
+.produits-banner{
+  position:relative;height:320px;overflow:hidden;
+}
+.pb-slide{
+  position:absolute;inset:0;opacity:0;
+  transition:opacity .9s ease;
+}
+.pb-slide.active{opacity:1}
+.pb-slide img{width:100%;height:100%;object-fit:cover;display:block}
+.pb-dots{
+  position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
+  display:flex;gap:.5rem;z-index:5;
+}
+.pb-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:rgba(255,255,255,.45);cursor:pointer;transition:.25s;
+}
+.pb-dot.active{background:#fff;width:22px;border-radius:4px}
+.pb-overlay{
+  position:absolute;inset:0;z-index:2;
+  background:linear-gradient(to right, rgba(6,14,31,.75) 0%, rgba(6,14,31,.4) 60%, transparent 100%);
+  display:flex;align-items:center;padding:0 4rem;
+}
+.pb-text{max-width:520px}
+.pb-tag{
+  display:inline-block;
+  background:rgba(245,158,11,.2);border:1px solid rgba(245,158,11,.4);
+  color:var(--gold2);font-size:.72rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:1.5px;
+  padding:.3rem .9rem;border-radius:20px;margin-bottom:.9rem;
+}
+.pb-title{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(1.6rem,3vw,2.6rem);font-weight:800;
+  color:#fff;line-height:1.15;margin-bottom:.7rem;
+}
+.pb-desc{
+  color:rgba(255,255,255,.75);font-size:.95rem;line-height:1.6;
+}
+
+/* ══════════════════════════════
+   CATEGORIES TAB
+══════════════════════════════ */
+.cat-tabs{
+  display:flex;gap:.6rem;flex-wrap:wrap;
+  justify-content:center;margin-bottom:2.5rem;
+}
+.cat-tab{
+  background:var(--g100);border:1.5px solid var(--g200);
+  color:var(--g600);font-size:.875rem;font-weight:600;
+  padding:.5rem 1.3rem;border-radius:30px;cursor:pointer;
+  transition:.2s;
+}
+.sub-tab{
+  background:var(--g50);border:1.5px solid var(--g200);
+  color:var(--g600);font-size:.8rem;font-weight:600;
+  padding:.4rem 1rem;border-radius:20px;cursor:pointer;transition:.2s;
+}
+.sub-tab:hover{border-color:var(--gold);color:var(--gold)}
+.sub-tab.active{background:var(--gold);border-color:var(--gold);color:var(--navy)}
+
+/* ══════════════════════════════
+   PRODUCT GRID
+══════════════════════════════ */
+.products-bg{background:var(--g50)}
+.product-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:1.5rem;
+}
+.product-card{
+  background:#fff;border-radius:var(--r);
+  border:1.5px solid var(--g200);
+  overflow:hidden;cursor:pointer;
+  transition:transform .25s,box-shadow .25s,border-color .25s;
+  position:relative;
+}
+.product-card:hover{
+  transform:translateY(-5px);
+  box-shadow:var(--shadow-lg);
+  border-color:var(--blue3);
+}
+.card-badge{
+  position:absolute;top:12px;left:12px;z-index:2;
+  font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;
+  padding:.25rem .65rem;border-radius:20px;
+}
+.badge-new{background:#DCFCE7;color:#15803D}
+.badge-sale{background:#FEE2E2;color:#DC2626}
+.badge-hot{background:#FEF3C7;color:#B45309}
+.card-img{
+  height:190px;
+  background:var(--g100);
+  position:relative;overflow:hidden;
+}
+.card-slide{
+  position:absolute;inset:0;opacity:0;transition:opacity .7s ease;
+}
+.card-slide.active{opacity:1}
+.card-slide img{
+  width:100%;height:100%;object-fit:cover;
+  display:block;transition:transform .4s;
+}
+.product-card:hover .card-slide.active img{transform:scale(1.06)}
+.card-slide-dots{
+  position:absolute;bottom:7px;left:50%;transform:translateX(-50%);
+  display:flex;gap:.3rem;z-index:3;
+}
+.card-slide-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:rgba(255,255,255,.5);transition:.2s;
+}
+.card-slide-dot.active{background:#fff;width:12px;border-radius:3px}
+.card-body{padding:1.2rem}
+.card-cat{
+  font-size:.68rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:1px;color:var(--blue2);margin-bottom:.4rem;
+}
+.card-name{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1rem;font-weight:700;color:var(--g800);
+  margin-bottom:.4rem;line-height:1.3;
+}
+.card-desc{font-size:.8rem;color:var(--g400);line-height:1.5;margin-bottom:1rem}
+.card-footer{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.card-price-now{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1.25rem;font-weight:800;color:var(--g800);
+}
+.card-price-old{font-size:.8rem;color:var(--g400);text-decoration:line-through;margin-left:.3rem}
+.card-add{
+  background:var(--blue2);color:#fff;border:none;
+  width:38px;height:38px;border-radius:10px;
+  font-size:1.2rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s,transform .15s;flex-shrink:0;
+}
+.card-add:hover{background:var(--blue3);transform:scale(1.1)}
+
+/* ══════════════════════════════
+   WHY US
+══════════════════════════════ */
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.why-img{
+  border-radius:20px;height:420px;overflow:hidden;
+  position:relative;
+}
+.why-slide{
+  position:absolute;inset:0;
+  opacity:0;transition:opacity .8s ease;
+}
+.why-slide.active{opacity:1}
+.why-slide img{width:100%;height:100%;object-fit:cover;display:block}
+.why-slide-caption{
+  position:absolute;left:0;right:0;bottom:0;
+  background:linear-gradient(transparent,rgba(6,14,31,.85));
+  padding:2.5rem 1.5rem 1.2rem;
+  color:#fff;font-size:.85rem;font-weight:600;
+}
+.why-slide-arrow{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:38px;height:38px;border-radius:50%;
+  background:rgba(255,255,255,.15);backdrop-filter:blur(6px);
+  border:1px solid rgba(255,255,255,.25);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:1rem;z-index:5;transition:.2s;
+}
+.why-slide-arrow:hover{background:rgba(255,255,255,.3)}
+.why-arrow-prev{left:14px}
+.why-arrow-next{right:14px}
+.why-dots{
+  position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
+  display:flex;gap:.4rem;z-index:5;
+}
+.why-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:rgba(255,255,255,.4);cursor:pointer;transition:.2s;
+}
+.why-dot.active{background:var(--gold);width:20px;border-radius:4px}
+.why-list{display:flex;flex-direction:column;gap:1.2rem}
+.why-item{
+  display:flex;gap:1rem;align-items:flex-start;
+  background:var(--g50);border:1.5px solid var(--g200);
+  border-radius:14px;padding:1rem 1.2rem;
+  transition:border-color .2s,box-shadow .2s;
+}
+.why-item:hover{border-color:var(--blue3);box-shadow:0 4px 16px rgba(37,99,235,.1)}
+.why-icon{
+  width:40px;height:40px;flex-shrink:0;
+  background:rgba(37,99,235,.1);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+}
+.why-item-title{font-weight:700;font-size:.9rem;color:var(--g800);margin-bottom:.2rem}
+.why-item-desc{font-size:.8rem;color:var(--g400);line-height:1.5}
+
+/* ══════════════════════════════
+   TESTIMONIALS
+══════════════════════════════ */
+.testi-bg{background:linear-gradient(135deg,var(--navy),var(--navy2));padding:5rem 2rem}
+.testi-inner{max-width:1200px;margin:0 auto}
+.testi-header{text-align:center;margin-bottom:3rem}
+.testi-title{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:2rem;font-weight:800;color:#fff;margin-bottom:.6rem;
+}
+.testi-sub{color:#64748B;font-size:1rem}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.testi-card{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;padding:1.5rem;
+  transition:background .2s;
+}
+.testi-card:hover{background:rgba(255,255,255,.08)}
+.testi-stars{color:var(--gold);font-size:1rem;margin-bottom:.8rem;letter-spacing:2px}
+.testi-text{color:#CBD5E1;font-size:.88rem;line-height:1.7;margin-bottom:1.2rem;font-style:italic}
+.testi-author{display:flex;align-items:center;gap:.8rem}
+.testi-avatar{
+  width:40px;height:40px;border-radius:50%;
+  background:linear-gradient(135deg,var(--blue2),#7C3AED);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;font-weight:700;color:#fff;flex-shrink:0;
+}
+.testi-name{font-weight:700;color:#fff;font-size:.88rem}
+.testi-loc{font-size:.75rem;color:#64748B}
+
+/* ══════════════════════════════
+   CTA BANNER
+══════════════════════════════ */
+.cta-banner{
+  background:linear-gradient(135deg,var(--blue2),#1e40af);
+  padding:4rem 2rem;text-align:center;position:relative;overflow:hidden;
+}
+.cta-banner::before{
+  content:'';position:absolute;top:-50%;right:-10%;
+  width:400px;height:400px;
+  background:radial-gradient(circle,rgba(255,255,255,.1),transparent 70%);
+}
+.cta-banner h2{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:2rem;font-weight:800;color:#fff;margin-bottom:.8rem;
+}
+.cta-banner p{color:rgba(255,255,255,.75);font-size:1rem;margin-bottom:2rem}
+.cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.btn-cta-white{
+  background:#fff;color:var(--blue2);border:none;
+  padding:.85rem 2rem;border-radius:12px;font-size:1rem;font-weight:700;
+  cursor:pointer;transition:.2s;
+}
+.btn-cta-white:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.btn-cta-outline{
+  background:transparent;border:2px solid rgba(255,255,255,.4);
+  color:#fff;padding:.85rem 2rem;border-radius:12px;
+  font-size:1rem;font-weight:600;cursor:pointer;transition:.2s;
+}
+.btn-cta-outline:hover{border-color:#fff;background:rgba(255,255,255,.08)}
+
+/* ══════════════════════════════
+   CONTACT
+══════════════════════════════ */
+.contact-form-card{
+  background:#fff;border:1.5px solid var(--g200);border-radius:20px;
+  padding:2rem;box-shadow:var(--shadow);
+}
+.contact-form-card h3{font-family:'Space Grotesk',sans-serif;font-size:1.15rem;font-weight:800;color:var(--g800);margin-bottom:1.4rem}
+.contact-submit-btn{
+  width:100%;background:var(--blue2);color:#fff;border:none;
+  padding:.9rem;border-radius:12px;font-size:.95rem;font-weight:700;
+  cursor:pointer;transition:.2s;margin-top:.4rem;
+}
+.contact-submit-btn:hover{background:var(--blue3);transform:translateY(-1px)}
+
+/* ══════════════════════════════
+   FOOTER
+══════════════════════════════ */
+footer{background:var(--navy);color:#fff;padding:4rem 2rem 2rem}
+.footer-inner{max-width:1200px;margin:0 auto}
+.footer-top{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;
+  margin-bottom:3rem;
+}
+.footer-brand{background: #000;}
+.footer-logo{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:.8rem}
+.footer-logo span{color:var(--gold)}
+.footer-about{color:#64748B;font-size:.85rem;line-height:1.7;margin-bottom:1.2rem}
+.footer-social{display:flex;gap:.7rem}
+.social-btn{
+  width:36px;height:36px;border-radius:9px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;cursor:pointer;transition:.2s;
+}
+.social-btn:hover{background:var(--blue2);border-color:var(--blue2)}
+.footer-col-title{font-weight:700;font-size:.9rem;margin-bottom:1.2rem;color:#fff}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:.7rem}
+.footer-links a{font-size:.83rem;color:#64748B;transition:color .2s;cursor:pointer}
+.footer-links a:hover{color:#fff}
+.footer-contact-item{display:flex;align-items:flex-start;gap:.6rem;margin-bottom:.8rem}
+.footer-contact-icon{font-size:.9rem;margin-top:.1rem}
+.footer-contact-text{font-size:.82rem;color:#64748B;line-height:1.5}
+.footer-divider{border:none;border-top:1px solid rgba(255,255,255,.07);margin-bottom:1.5rem}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.footer-copy{font-size:.8rem;color:#475569}
+.footer-copy strong{color:var(--gold)}
+.footer-pay{display:flex;gap:.5rem;align-items:center}
+.pay-chip{
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+  border-radius:7px;padding:.25rem .6rem;font-size:.72rem;font-weight:600;color:#94A3B8;
+}
+
+/* ══════════════════════════════
+   PRODUCT DETAIL MODAL
+══════════════════════════════ */
+.modal-overlay{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(6,14,31,.75);backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;padding:1rem;
+  opacity:0;pointer-events:none;transition:opacity .25s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{
+  background:#fff;border-radius:20px;
+  max-width:860px;width:100%;max-height:90vh;overflow-y:auto;
+  box-shadow:0 40px 100px rgba(0,0,0,.4);
+  transform:translateY(30px) scale(.97);
+  transition:transform .3s;
+}
+.modal-overlay.open .modal{transform:translateY(0) scale(1)}
+.modal-photo-wrap{
+  position:relative;height:280px;
+  border-radius:20px 20px 0 0;overflow:hidden;
+  background:var(--g100);
+}
+.modal-photo{width:100%;height:100%;object-fit:cover;display:block}
+.modal-photo-overlay{
+  position:absolute;left:0;right:0;bottom:0;
+  background:linear-gradient(transparent,rgba(6,14,31,.9));
+  padding:2.5rem 2rem 1.4rem;
+}
+.modal-photo-overlay h2{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:.3rem}
+.modal-photo-overlay p{font-size:.78rem;color:#CBD5E1;letter-spacing:1px;text-transform:uppercase}
+.modal-tabs{
+  display:flex;gap:0;border-bottom:2px solid var(--g200);
+  padding:0 2rem;background:#fff;
+}
+.modal-tab{
+  background:none;border:none;
+  padding:.9rem 1.5rem;font-size:.9rem;font-weight:700;
+  color:var(--g400);cursor:pointer;transition:.2s;
+  border-bottom:2px solid transparent;margin-bottom:-2px;
+}
+.modal-tab:hover{color:var(--blue2)}
+.modal-tab.active{color:var(--blue2);border-bottom-color:var(--blue2)}
+.modal-caption{
+  display:flex;align-items:center;gap:.6rem;
+  padding:.75rem 1.5rem;
+  background:linear-gradient(135deg,var(--navy),var(--navy2));
+  border-bottom:1px solid rgba(255,255,255,.06);
+  min-height:42px;
+}
+.modal-caption-icon{font-size:1rem}
+#mCaptionText{
+  font-size:.85rem;font-weight:600;color:#E2E8F0;
+  font-family:'Space Grotesk',sans-serif;
+  transition:opacity .25s;
+
+  display:flex;gap:.5rem;padding:.8rem 2rem;
+  background:var(--g50);border-bottom:1px solid var(--g200);
+  overflow-x:auto;
+}
+
+.modal-thumb{
+  width:64px;height:64px;flex-shrink:0;border-radius:10px;overflow:hidden;
+  border:2px solid transparent;cursor:pointer;transition:.2s;opacity:.6;
+}
+.modal-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.modal-thumb:hover{opacity:.85}
+.modal-thumb.active{border-color:var(--blue2);opacity:1}
+.modal-close-btn{
+  position:absolute;top:1rem;right:1rem;
+  background:rgba(255,255,255,.12);border:none;color:#fff;
+  width:34px;height:34px;border-radius:50%;font-size:1rem;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:.2s;
+}
+.modal-close-btn:hover{background:rgba(255,255,255,.25)}
+.modal-body{display:grid;grid-template-columns:1fr 1fr;gap:2rem;padding:2rem}
+.specs-section-title{
+  font-family:'Space Grotesk',sans-serif;font-size:.9rem;font-weight:700;
+  color:var(--g800);margin-bottom:.8rem;
+  display:flex;align-items:center;gap:.4rem;
+}
+.specs-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1.5rem}
+.spec-box{background:var(--g50);border:1px solid var(--g200);border-radius:10px;padding:.65rem .9rem}
+.spec-box-key{font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;color:var(--g400);margin-bottom:.2rem}
+.spec-box-val{font-size:.88rem;font-weight:700;color:var(--g800)}
+.features-ul{list-style:none;margin-bottom:1.5rem}
+.features-ul li{
+  display:flex;align-items:flex-start;gap:.5rem;
+  font-size:.85rem;color:var(--g600);
+  padding:.35rem 0;border-bottom:1px solid var(--g100);
+}
+.features-ul li:last-child{border-bottom:none}
+.feat-check{color:var(--green);font-size:.9rem;margin-top:.1rem}
+/* right side modal */
+.modal-stock{
+  display:inline-flex;align-items:center;gap:.4rem;
+  background:#F0FDF4;border:1px solid #BBF7D0;
+  border-radius:20px;padding:.3rem .9rem;
+  font-size:.78rem;font-weight:700;color:#16A34A;
+  margin-bottom:1.2rem;
+}
+.stock-dot{width:7px;height:7px;background:#16A34A;border-radius:50%}
+.modal-price-block{margin-bottom:1.2rem}
+.modal-price-now{font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:800;color:var(--g800)}
+.modal-price-old{font-size:.95rem;color:var(--g400);text-decoration:line-through;margin-left:.4rem}
+.modal-disc{
+  display:inline-block;background:#FEF3C7;color:#92400E;
+  font-size:.75rem;font-weight:700;padding:.2rem .6rem;border-radius:6px;margin-left:.4rem;
+}
+.modal-qty-row{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem}
+.qty-wrap{
+  display:flex;align-items:center;gap:.5rem;
+  background:var(--g100);border-radius:10px;padding:.3rem .5rem;
+}
+.qty-btn{
+  background:#fff;border:1px solid var(--g200);border-radius:7px;
+  width:28px;height:28px;font-size:1rem;font-weight:700;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:.15s;
+}
+.qty-btn:hover{background:var(--g200)}
+.qty-val{font-family:'Space Grotesk',sans-serif;font-size:.95rem;font-weight:700;min-width:24px;text-align:center}
+.modal-add-btn{
+  width:100%;background:var(--blue2);color:#fff;border:none;
+  padding:.9rem;border-radius:12px;font-size:.95rem;font-weight:700;
+  cursor:pointer;transition:.2s;margin-bottom:.6rem;
+}
+.modal-add-btn:hover{background:var(--blue3);transform:translateY(-1px)}
+.modal-wish-btn{
+  width:100%;background:var(--g50);border:1.5px solid var(--g200);
+  color:var(--g600);padding:.7rem;border-radius:12px;
+  font-size:.88rem;font-weight:600;cursor:pointer;transition:.2s;
+}
+.modal-wish-btn:hover{background:#FEF2F2;border-color:#FECACA;color:#DC2626}
+.modal-perks{
+  display:flex;flex-direction:column;gap:.5rem;margin-top:1rem;
+}
+.perk{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:var(--g400)}
+.perk-icon{font-size:.9rem}
+
+/* ══════════════════════════════
+   CART DRAWER
+══════════════════════════════ */
+.cart-overlay{
+  position:fixed;inset:0;z-index:250;
+  background:rgba(6,14,31,.6);backdrop-filter:blur(4px);
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.cart-overlay.open{opacity:1;pointer-events:all}
+.cart-drawer{
+  position:absolute;top:0;right:0;
+  width:400px;max-width:100vw;height:100%;
+  background:#fff;display:flex;flex-direction:column;
+  box-shadow:-12px 0 48px rgba(0,0,0,.2);
+  transform:translateX(100%);
+  transition:transform .35s cubic-bezier(.4,0,.2,1);
+}
+.cart-overlay.open .cart-drawer{transform:translateX(0)}
+.cart-head{
+  background:var(--navy);padding:1.2rem 1.4rem;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.cart-head-title{font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;color:#fff}
+.cart-head-sub{font-size:.75rem;color:#64748B;margin-top:.1rem}
+.cart-x{
+  background:rgba(255,255,255,.12);border:none;color:#fff;
+  width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.9rem;
+  display:flex;align-items:center;justify-content:center;transition:.2s;
+}
+.cart-x:hover{background:rgba(255,255,255,.25)}
+.cart-body{flex:1;overflow-y:auto;padding:1rem}
+.cart-empty-state{text-align:center;padding:3rem 1rem}
+.cart-item-row{
+  display:flex;align-items:center;gap:.9rem;
+  padding:.9rem;background:var(--g50);border-radius:12px;
+  margin-bottom:.7rem;border:1px solid var(--g200);
+}
+.cart-item-icon{
+  width:50px;height:50px;flex-shrink:0;
+  border-radius:10px;overflow:hidden;background:var(--g200);
+}
+.cart-item-icon img{width:100%;height:100%;object-fit:cover;display:block}
+.cart-item-info{flex:1;min-width:0}
+.cart-item-name{font-size:.85rem;font-weight:600;color:var(--g800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cart-item-price{font-size:.82rem;color:var(--blue2);font-weight:700;margin-top:.2rem}
+.cart-item-qty-row{display:flex;align-items:center;gap:.4rem;margin-top:.5rem}
+.cq-btn{
+  background:#fff;border:1px solid var(--g200);border-radius:6px;
+  width:24px;height:24px;cursor:pointer;font-size:.9rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;transition:.15s;
+}
+.cq-btn:hover{background:var(--g200)}
+.cq-num{font-size:.85rem;font-weight:700;min-width:20px;text-align:center}
+.cart-item-del{
+  background:none;border:none;color:var(--g400);cursor:pointer;
+  padding:.3rem;border-radius:6px;font-size:1rem;transition:.2s;
+}
+.cart-item-del:hover{color:var(--red);background:#FEF2F2}
+.cart-foot{padding:1.2rem 1.4rem;border-top:1px solid var(--g200)}
+.cart-total-line{
+  display:flex;justify-content:space-between;
+  font-size:.88rem;color:var(--g600);padding:.25rem 0;
+}
+.cart-grand-line{
+  display:flex;justify-content:space-between;
+  font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:800;color:var(--g800);
+  border-top:1px solid var(--g200);margin:.6rem 0;padding-top:.7rem;
+}
+.cart-checkout-btn{
+  width:100%;background:var(--gold);color:var(--navy);
+  border:none;padding:.9rem;border-radius:12px;
+  font-size:1rem;font-weight:800;cursor:pointer;margin-bottom:.6rem;
+  transition:.2s;
+}
+.cart-checkout-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(245,158,11,.4)}
+.cart-continue-btn{
+  width:100%;background:transparent;border:1.5px solid var(--g200);
+  color:var(--g400);padding:.7rem;border-radius:12px;
+  font-size:.85rem;cursor:pointer;transition:.2s;
+}
+.cart-continue-btn:hover{background:var(--g100)}
+
+/* ══════════════════════════════
+   CHECKOUT MODAL
+══════════════════════════════ */
+.co-overlay{
+  position:fixed;inset:0;z-index:350;
+  background:rgba(6,14,31,.8);backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;padding:1rem;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.co-overlay.open{opacity:1;pointer-events:all}
+.co-modal{
+  background:#fff;border-radius:20px;
+  width:100%;max-width:560px;max-height:92vh;overflow-y:auto;
+  box-shadow:0 40px 100px rgba(0,0,0,.4);
+  transform:scale(.95);transition:transform .3s;
+}
+.co-overlay.open .co-modal{transform:scale(1)}
+/* Steps */
+.co-steps{
+  display:flex;align-items:center;
+  padding:1.4rem 2rem;background:var(--g50);
+  border-radius:20px 20px 0 0;border-bottom:1px solid var(--g200);
+}
+.co-step{display:flex;align-items:center;flex:1}
+.co-step-circle{
+  width:30px;height:30px;border-radius:50%;
+  border:2px solid var(--g200);background:#fff;
+  color:var(--g400);font-size:.8rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:.3s;
+}
+.co-step.active .co-step-circle{background:var(--blue2);border-color:var(--blue2);color:#fff}
+.co-step.done .co-step-circle{background:var(--green);border-color:var(--green);color:#fff}
+.co-step-label{font-size:.72rem;font-weight:600;color:var(--g400);margin-left:.5rem;white-space:nowrap}
+.co-step.active .co-step-label{color:var(--blue2)}
+.co-step.done .co-step-label{color:var(--green)}
+.co-step-line{flex:1;height:2px;background:var(--g200);margin:0 .5rem;transition:.3s}
+.co-step-line.done{background:var(--green)}
+/* Body */
+.co-body{padding:1.8rem 2rem}
+.co-title{font-family:'Space Grotesk',sans-serif;font-size:1.15rem;font-weight:800;color:var(--g800);margin-bottom:1.4rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.form-full{grid-template-columns:1fr}
+.form-group{display:flex;flex-direction:column;gap:.4rem}
+.form-label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--g600)}
+.form-input,.form-select{
+  padding:.7rem 1rem;border:1.5px solid var(--g200);border-radius:10px;
+  font-size:.9rem;font-family:'Inter',sans-serif;color:var(--g800);
+  background:#fff;outline:none;transition:.2s;
+}
+.form-input:focus,.form-select:focus{border-color:var(--blue2);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+/* Pay options */
+.pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1rem}
+.pay-opt{
+  border:2px solid var(--g200);border-radius:12px;
+  padding:.9rem;cursor:pointer;text-align:center;transition:.2s;
+}
+.pay-opt.sel{border-color:var(--blue2);background:#EFF6FF}
+.pay-opt-icon{font-size:1.6rem;margin-bottom:.3rem}
+.pay-opt-name{font-size:.82rem;font-weight:700;color:var(--g800)}
+.pay-opt-sub{font-size:.7rem;color:var(--g400)}
+/* Summary */
+.co-summary{background:var(--g50);border-radius:12px;padding:1rem;margin-bottom:1.2rem}
+.co-summary-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--g400);margin-bottom:.8rem}
+.co-sum-item{display:flex;justify-content:space-between;font-size:.84rem;color:var(--g600);padding:.25rem 0;border-bottom:1px solid var(--g200)}
+.co-sum-item:last-child{border-bottom:none}
+.co-sum-total{display:flex;justify-content:space-between;font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:800;color:var(--g800);margin-top:.8rem;padding-top:.6rem;border-top:2px solid var(--g200)}
+/* Nav */
+.co-nav{display:flex;gap:.8rem;margin-top:1.5rem}
+.co-back{
+  background:var(--g100);border:1.5px solid var(--g200);color:var(--g600);
+  padding:.8rem 1.4rem;border-radius:12px;font-size:.9rem;font-weight:600;cursor:pointer;transition:.2s;
+}
+.co-back:hover{background:var(--g200)}
+.co-next{
+  flex:1;background:var(--blue2);color:#fff;border:none;
+  padding:.8rem;border-radius:12px;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s;
+}
+.co-next:hover{background:var(--blue3);transform:translateY(-1px)}
+.co-confirm{
+  flex:1;background:var(--gold);color:var(--navy);border:none;
+  padding:.8rem;border-radius:12px;font-size:.9rem;font-weight:800;cursor:pointer;transition:.2s;
+}
+.co-confirm:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(245,158,11,.35)}
+/* Success */
+.co-success{text-align:center;padding:2rem 1rem}
+.co-success-icon{font-size:4rem;margin-bottom:1rem;animation:pop .5s ease}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+.co-success h2{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:800;color:var(--g800);margin-bottom:.6rem}
+.co-success p{color:var(--g400);font-size:.9rem;line-height:1.6;margin-bottom:1.5rem}
+.co-ref{background:var(--g50);border-radius:12px;padding:1rem;margin-bottom:1rem}
+.co-ref-label{font-size:.75rem;color:var(--g400)}
+.co-ref-num{font-family:'Space Grotesk',sans-serif;font-size:1.2rem;font-weight:800;color:var(--blue2);margin-top:.2rem}
+.co-info-box{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:.9rem;font-size:.82rem;color:#166534;line-height:1.8;margin-bottom:1.5rem;text-align:left}
+
+/* ══════════════════════════════
+   VIDEO MODAL
+══════════════════════════════ */
+.video-overlay{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(6,14,31,.88);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;padding:1.5rem;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.video-overlay.open{opacity:1;pointer-events:all}
+.video-modal{
+  background:var(--navy2);border-radius:20px;
+  width:100%;max-width:820px;
+  box-shadow:0 40px 100px rgba(0,0,0,.6);
+  overflow:hidden;position:relative;
+  transform:scale(.94);transition:transform .3s;
+}
+.video-overlay.open .video-modal{transform:scale(1)}
+.video-close{
+  position:absolute;top:1rem;right:1rem;z-index:10;
+  background:rgba(255,255,255,.15);backdrop-filter:blur(6px);
+  border:none;color:#fff;width:36px;height:36px;border-radius:50%;
+  font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:.2s;
+}
+.video-close:hover{background:rgba(255,255,255,.3)}
+.video-wrap{
+  position:relative;width:100%;aspect-ratio:16/9;background:#000;
+}
+.video-wrap video{width:100%;height:100%;display:block;object-fit:cover}
+.video-caption{
+  padding:1.2rem 1.6rem;
+  background:linear-gradient(135deg,var(--navy),var(--navy2));
+}
+.video-caption-title{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1rem;font-weight:700;color:#fff;margin-bottom:.3rem;
+}
+.video-caption-sub{font-size:.82rem;color:#94A3B8;line-height:1.5}
+
+/* ══════════════════════════════
+   TOAST
+══════════════════════════════ */
+.toast{
+  position:fixed;bottom:2rem;right:2rem;z-index:999;
+  background:var(--navy);color:#fff;
+  padding:.9rem 1.4rem;border-radius:12px;
+  font-size:.88rem;font-weight:600;
+  box-shadow:0 8px 28px rgba(0,0,0,.3);
+  transform:translateY(80px);opacity:0;transition:.3s;
+  display:flex;align-items:center;gap:.5rem;
+}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* ══════════════════════════════
+   RESPONSIVE
+══════════════════════════════ */
+@media(max-width:900px){
+  .hero-inner{grid-template-columns:1fr;text-align:center}
+  .hero-visual{display:none}
+  .hero-stats{justify-content:center}
+  .hero-btns{justify-content:center}
+  .hero-desc{margin:0 auto 2rem}
+  .features-inner{grid-template-columns:repeat(2,1fr)}
+  .why-grid{grid-template-columns:1fr}
+  .why-img{display:none}
+  .testi-grid{grid-template-columns:1fr 1fr}
+  .footer-top{grid-template-columns:1fr 1fr;gap:2rem}
+  .modal-body{grid-template-columns:1fr}
+  .nav-menu{display:none}
+  .hamburger{display:flex}
+}
+@media(max-width:600px){
+  .features-inner{grid-template-columns:1fr 1fr}
+  .testi-grid{grid-template-columns:1fr}
+  .footer-top{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  .pay-grid{grid-template-columns:1fr 1fr}
+  .nav{padding:0 1.2rem}
+  .section{padding:3.5rem 1.2rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAVBAR ══ -->
+<nav class="nav" id="mainNav">
+  <div class="nav-logo">Sol<span>tex</span></div>
+  <ul class="nav-menu" id="navMenu">
+    <li><a onclick="scrollToSection('hero')" class="active">Accueil</a></li>
+    <li><a onclick="filterCat('all');scrollToSection('produits')">Produits</a></li>
+    <li><a onclick="filterCat('ACCESSOIRES');scrollToSection('produits')">Accessoires</a></li>
+    <li><a onclick="scrollToSection('contact')">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="nav-fav" onclick="toggleFav()">
+      ♡ <span class="fav-badge" id="favCount" style="display:none">0</span>
+    </button>
+    <button class="nav-cart" onclick="toggleCart()">
+      🛒 Panier <span class="cart-badge" id="cartCount">0</span>
+    </button>
+    <button class="hamburger" onclick="toggleMenu()" id="hamburger">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section id="hero" style="padding-top:68px">
+<div class="hero">
+  <div class="hero-bg">
+    <video class="hero-video" autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1200&q=80">
+      <source src="https://videos.pexels.com/video-files/857195/857195-hd_1920_1080_30fps.mp4" type="video/mp4">
+    </video>
+    <div class="hero-video-overlay"></div>
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+    <div class="hero-grid"></div>
+  </div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">⚡ Énergie Solaire Madagascar</div>
+      <h1>L'énergie solaire,<br><span class="accent">accessible à tous</span></h1>
+      <p class="hero-desc">Panneaux, batteries, onduleurs et accessoires — tout le matériel certifié pour votre installation solaire, livré partout à Madagascar.</p>
+      <div class="hero-btns">
+        <button class="btn-hero-primary" onclick="scrollToSection('produits')">Voir les produits ↓</button>
+        <button class="btn-hero-outline" onclick="openVideoModal()">▶ Voir la vidéo</button>
+      </div>
+      <div class="hero-stats">
+        <div><div class="hero-stat-num">500+</div><div class="hero-stat-label">Clients satisfaits</div></div>
+        <div><div class="hero-stat-num">5 ans</div><div class="hero-stat-label">Garantie panneau</div></div>
+        <div><div class="hero-stat-num">48h</div><div class="hero-stat-label">Livraison rapide</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div style="position:relative">
+        <div class="hero-panel">
+          <div class="panel-grid" id="panelGrid"></div>
+          <div class="panel-info">
+            <div class="panel-badge">✓ Certifié</div>
+            <div class="panel-watt">300 <span>Wc</span></div>
+          </div>
+        </div>
+        <div class="float-card float-card-1">🔋 Batterie 100Ah — $59</div>
+        <div class="float-card float-card-2">⚡ -23% sur le Kit 500W</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══ FEATURES STRIP ══ -->
+<div class="features-strip">
+  <div class="features-inner">
+    <div class="feat-item">
+      <div class="feat-icon">🚚</div>
+      <div class="feat-title">Livraison partout</div>
+      <div class="feat-desc">Livraison en 24–48h dans toutes les régions de Madagascar</div>
+    </div>
+    <div class="feat-item">
+      <div class="feat-icon">🛡️</div>
+      <div class="feat-title">Garantie fabricant</div>
+      <div class="feat-desc">Tous nos produits sont certifiés CE, IEC et couverts par garantie</div>
+    </div>
+    <div class="feat-item">
+      <div class="feat-icon">💳</div>
+      <div class="feat-title">Paiement mobile</div>
+      <div class="feat-desc">MVola, Orange Money, Airtel Money ou paiement à la livraison</div>
+    </div>
+    <div class="feat-item">
+      <div class="feat-icon">📞</div>
+      <div class="feat-title">Support 24/7</div>
+      <div class="feat-desc">Une équipe disponible pour vous conseiller et vous accompagner</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PRODUITS ══ -->
+<!-- ══ PRODUITS BANNER ══ -->
+<div class="produits-banner">
+  <div class="pb-slide active"><img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1400&q=80" alt="Panneaux solaires"/></div>
+  <div class="pb-slide"><img src="https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=1400&q=80" alt="Installation solaire"/></div>
+  <div class="pb-slide"><img src="https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=1400&q=80" alt="Énergie solaire"/></div>
+  <div class="pb-dots">
+    <div class="pb-dot active" onclick="pbGoTo(0)"></div>
+    <div class="pb-dot" onclick="pbGoTo(1)"></div>
+    <div class="pb-dot" onclick="pbGoTo(2)"></div>
+  </div>
+</div>
+
+<section id="produits" class="products-bg">
+<div class="section">
+  <div class="section-header">
+    <div class="section-tag">Notre catalogue</div>
+    <h2 class="section-title">Tous nos produits</h2>
+    <p class="section-sub">Matériel certifié, disponible en stock, livré partout à Madagascar</p>
+  </div>
+  <div class="cat-tabs" id="catTabs">
+    <button class="cat-tab active" onclick="filterCat('KITS')">📦 Pack Complet</button>
+    <button class="cat-tab" onclick="filterCat('PANNEAUX')">☀️ Panneaux</button>
+    <button class="cat-tab" onclick="filterCat('BATTERIES')">🔋 Batteries</button>
+    <button class="cat-tab" onclick="filterCat('ONDULEURS')">⚡ Onduleurs</button>
+    <button class="cat-tab" onclick="filterCat('RÉGULATEURS')">🔌 Régulateurs</button>
+    <button class="cat-tab" onclick="filterCat('ACCESSOIRES')">🔧 Accessoires</button>
+    <button class="cat-tab" onclick="filterCat('all')">Tous</button>
+  </div>
+  <!-- Sub-filtre panneaux -->
+  <div id="panneau-subfilter" style="display:none;margin-bottom:1.5rem">
+    <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--g400);margin-bottom:.6rem;text-align:center">Type de panneau</div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center">
+      <button class="sub-tab active" onclick="filterType('all')">Tous</button>
+      <button class="sub-tab" onclick="filterType('Monocristallin')">☀️ Monocristallin</button>
+      <button class="sub-tab" onclick="filterType('Polycristallin')">🌤️ Polycristallin</button>
+      <button class="sub-tab" onclick="filterType('Bifacial')">✨ Bifacial</button>
+      <button class="sub-tab" onclick="filterType('Flexible')">🌊 Flexible</button>
+    </div>
+  </div>
+  <!-- Sub-filtre batteries -->
+  <div id="batterie-subfilter" style="display:none;margin-bottom:1.5rem">
+    <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--g400);margin-bottom:.6rem;text-align:center">Type de batterie</div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center">
+      <button class="sub-tab active" onclick="filterType('all')">Tous</button>
+      <button class="sub-tab" onclick="filterType('AGM')">🔋 AGM</button>
+      <button class="sub-tab" onclick="filterType('Gel')">🟦 Gel</button>
+      <button class="sub-tab" onclick="filterType('Lithium')">⚡ Lithium</button>
+      <button class="sub-tab" onclick="filterType('Acide-Plomb')">🔩 Acide-Plomb</button>
+    </div>
+  </div>
+  <!-- Sub-filtre onduleurs -->
+  <div id="onduleur-subfilter" style="display:none;margin-bottom:1.5rem">
+    <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--g400);margin-bottom:.6rem;text-align:center">Type d'onduleur</div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center">
+      <button class="sub-tab active" onclick="filterType('all')">Tous</button>
+      <button class="sub-tab" onclick="filterType('Pur Sinus')">🔵 Pur Sinus</button>
+      <button class="sub-tab" onclick="filterType('Quasi Sinus')">🟡 Quasi Sinus</button>
+    </div>
+  </div>
+  <!-- Sub-filtre régulateurs -->
+  <div id="regulateur-subfilter" style="display:none;margin-bottom:1.5rem">
+    <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--g400);margin-bottom:.6rem;text-align:center">Type de régulateur</div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center">
+      <button class="sub-tab active" onclick="filterType('all')">Tous</button>
+      <button class="sub-tab" onclick="filterType('PWM')">🔧 PWM</button>
+      <button class="sub-tab" onclick="filterType('MPPT')">⚡ MPPT</button>
+    </div>
+  </div>
+  <div class="product-grid" id="productGrid"></div>
+</div>
+</section>
+
+<!-- ══ POURQUOI ══ -->
+<section id="pourquoi">
+<div class="section">
+  <div class="why-grid">
+    <div class="why-img" id="whySlideshow">
+      <div class="why-slide active"><img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?w=700&q=80" alt="Installation panneaux solaires"/><div class="why-slide-caption">Panneaux solaires haute performance</div></div>
+      <div class="why-slide"><img src="https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=700&q=80" alt="Champ de panneaux solaires"/><div class="why-slide-caption">Installations sur mesure à Madagascar</div></div>
+      <div class="why-slide"><img src="https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=700&q=80" alt="Technologie solaire"/><div class="why-slide-caption">Technologie certifiée et durable</div></div>
+      <div class="why-slide"><img src="https://images.unsplash.com/photo-1620714223084-862fa1d0e0a6?w=700&q=80" alt="Batteries solaires"/><div class="why-slide-caption">Stockage d'énergie fiable</div></div>
+      <div class="why-slide"><img src="https://images.unsplash.com/photo-1559302995-f1d6e557ddc6?w=700&q=80" alt="Maison équipée solaire"/><div class="why-slide-caption">Indépendance énergétique pour votre foyer</div></div>
+      <button class="why-slide-arrow why-arrow-prev" onclick="whyPrev()">‹</button>
+      <button class="why-slide-arrow why-arrow-next" onclick="whyNext()">›</button>
+      <div class="why-dots" id="whyDots"></div>
+    </div>
+    <div>
+      <div class="section-tag">Pourquoi nous choisir</div>
+      <h2 class="section-title" style="text-align:left;margin-bottom:1.5rem">Le partenaire solaire<br>de confiance à Madagascar</h2>
+      <div class="why-list">
+        <div class="why-item">
+          <div class="why-icon">🎯</div>
+          <div>
+            <div class="why-item-title">Spécialiste solaire Madagascar</div>
+            <div class="why-item-desc">Plus de 5 ans d'expertise dans l'installation et la vente de matériel solaire adapté au marché malgache.</div>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon">✅</div>
+          <div>
+            <div class="why-item-title">Produits certifiés et garantis</div>
+            <div class="why-item-desc">Tous nos produits sont certifiés CE, IEC 61215 et accompagnés d'une garantie fabricant allant jusqu'à 5 ans.</div>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon">💰</div>
+          <div>
+            <div class="why-item-title">Prix compétitifs</div>
+            <div class="why-item-desc">Importation directe, sans intermédiaire — nous vous offrons les meilleurs prix du marché malgache.</div>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon">🤝</div>
+          <div>
+            <div class="why-item-title">Accompagnement personnalisé</div>
+            <div class="why-item-desc">Notre équipe vous guide dans le choix du bon matériel selon vos besoins en énergie et votre budget.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="testi-bg">
+  <div class="testi-inner">
+    <div class="testi-header">
+      <div class="section-tag" style="background:rgba(245,158,11,.15);color:var(--gold2)">Avis clients</div>
+      <h2 class="testi-title">Ce que disent nos clients</h2>
+      <p class="testi-sub">Plus de 500 familles et entreprises nous font confiance à Madagascar</p>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Produits de très bonne qualité ! Mon panneau 300W fonctionne parfaitement depuis 8 mois. Livraison rapide à Toamasina."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">R</div>
+          <div><div class="testi-name">Rakoto Jean</div><div class="testi-loc">📍 Toamasina</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Le kit complet 500W a transformé notre maison. Plus de coupures de courant ! Le paiement via MVola était très pratique."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">S</div>
+          <div><div class="testi-name">Soamalala Fara</div><div class="testi-loc">📍 Fianarantsoa</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★☆</div>
+        <p class="testi-text">"Très bon service client. Ils m'ont aidé à choisir la bonne batterie pour mon installation. Je recommande vivement !"</p>
+        <div class="testi-author">
+          <div class="testi-avatar">A</div>
+          <div><div class="testi-name">Andriantsoa Paul</div><div class="testi-loc">📍 Antananarivo</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CTA BANNER ══ -->
+<div class="cta-banner">
+  <h2>🌞 Livraison gratuite dès $200 d'achat</h2>
+  <p>Profitez de nos promotions en cours sur les batteries et kits solaires complets</p>
+  <div class="cta-btns">
+    <button class="btn-cta-white" onclick="scrollToSection('produits')">Voir les promotions</button>
+    <button class="btn-cta-outline" onclick="scrollToSection('contact')">Nous contacter</button>
+  </div>
+</div>
+
+<!-- ══ CONTACT ══ -->
+<section id="contact">
+<div class="section">
+  <div class="section-header">
+    <div class="section-tag">Parlons-en</div>
+    <h2 class="section-title">Contactez-nous</h2>
+    <p class="section-sub">Une question, un projet d'installation ? Notre équipe vous répond rapidement</p>
+  </div>
+
+  <div class="contact-form-card" style="max-width:640px;margin:0 auto">
+    <h3>Envoyez-nous un message</h3>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Nom complet</label><input class="form-input" id="ctName" placeholder="Votre nom"/></div>
+      <div class="form-group"><label class="form-label">Téléphone</label><input class="form-input" id="ctTel" placeholder="+261 34 00 000 00"/></div>
+    </div>
+    <div class="form-row form-full">
+      <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" id="ctEmail" placeholder="votre@email.com"/></div>
+    </div>
+    <div class="form-row form-full">
+      <div class="form-group"><label class="form-label">Sujet</label>
+        <select class="form-select" id="ctSubject">
+          <option>Demande de devis</option>
+          <option>Question produit</option>
+          <option>Support technique</option>
+          <option>Partenariat</option>
+          <option>Autre</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row form-full">
+      <div class="form-group">
+        <label class="form-label">Message</label>
+        <textarea class="form-input" id="ctMessage" rows="4" placeholder="Décrivez votre besoin..." style="resize:vertical;font-family:'Inter',sans-serif"></textarea>
+      </div>
+    </div>
+    <button class="contact-submit-btn" onclick="sendContactForm()">Envoyer le message →</button>
+  </div>
+</div>
+</section>
+
+<!-- ══ CONTACT / FOOTER ══ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">Sol<span>tex</span></div>
+        <p class="footer-about">Votre spécialiste de l'énergie solaire à Madagascar. Matériel certifié, prix compétitifs, livraison partout dans l'île.</p>
+        <div class="footer-social">
+          <a href="https://facebook.com" target="_blank" rel="noopener" class="social-btn">f</a>
+          <a href="https://instagram.com" target="_blank" rel="noopener" class="social-btn">📷</a>
+          <a href="https://youtube.com" target="_blank" rel="noopener" class="social-btn">▶</a>
+          <a href="https://linkedin.com" target="_blank" rel="noopener" class="social-btn">in</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Navigation</div>
+        <ul class="footer-links">
+          <li><a onclick="scrollToSection('hero')">Accueil</a></li>
+          <li><a onclick="scrollToSection('produits')">Produits</a></li>
+          <li><a onclick="scrollToSection('contact')">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Catégories</div>
+        <ul class="footer-links">
+          <li><a onclick="filterCat('PANNEAUX');scrollToSection('produits')">Panneaux solaires</a></li>
+          <li><a onclick="filterCat('BATTERIES');scrollToSection('produits')">Batteries</a></li>
+          <li><a onclick="filterCat('ONDULEURS');scrollToSection('produits')">Onduleurs</a></li>
+          <li><a onclick="filterCat('ACCESSOIRES');scrollToSection('produits')">Accessoires</a></li>
+          <li><a onclick="filterCat('KITS');scrollToSection('produits')">Pack Complet</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Contact</div>
+        <div class="footer-contact-item">
+          <span class="footer-contact-icon">📞</span>
+          <div class="footer-contact-text">+261 34 00 000 00<br>+261 32 00 000 00</div>
+        </div>
+        <div class="footer-contact-item">
+          <span class="footer-contact-icon">📧</span>
+          <div class="footer-contact-text">contact@solarmada.mg</div>
+        </div>
+        <div class="footer-contact-item">
+          <span class="footer-contact-icon">📍</span>
+          <div class="footer-contact-text">Antananarivo, Madagascar<br>Ouvert Lu–Sa 8h–18h</div>
+        </div>
+      </div>
+    </div>
+    <hr class="footer-divider"/>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 <strong>Soltex</strong> — Tous droits réservés</div>
+      <div class="footer-pay">
+        <span style="font-size:.75rem;color:#475569;margin-right:.3rem">Paiements :</span>
+        <span class="pay-chip">📱 MVola</span>
+        <span class="pay-chip">🟠 Orange</span>
+        <span class="pay-chip">🔴 Airtel</span>
+        <span class="pay-chip">💵 Cash</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ══ PRODUCT DETAIL MODAL ══ -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleModalOverlay(event)">
+  <div class="modal">
+    <div class="modal-photo-wrap">
+      <img class="modal-photo" id="mPhoto" src="" alt=""/>
+      <button class="modal-close-btn" onclick="closeModal()">✕</button>
+      <div class="modal-photo-overlay">
+        <h2 id="mName">Produit</h2>
+        <p id="mCat">Catégorie</p>
+      </div>
+    </div>
+    <div class="modal-caption" id="mCaption">
+      <span class="modal-caption-icon" id="mCaptionIcon">📋</span>
+      <span id="mCaptionText">—</span>
+    </div>
+    <div class="modal-thumbs" id="mThumbs"></div>
+    <div class="modal-body">
+      <div>
+        <div class="specs-section-title">📋 Caractéristiques</div>
+        <div class="specs-grid-2" id="mSpecs"></div>
+        <div class="specs-section-title">✅ Avantages</div>
+        <ul class="features-ul" id="mFeatures"></ul>
+      </div>
+      <div>
+        <div class="modal-stock"><div class="stock-dot"></div> En stock</div>
+        <div class="modal-price-block">
+          <span class="modal-price-now" id="mPrice">$0</span>
+          <span class="modal-price-old" id="mOld"></span>
+          <span class="modal-disc" id="mDisc" style="display:none"></span>
+        </div>
+        <div class="modal-qty-row">
+          <span style="font-size:.85rem;font-weight:600;color:var(--g600)">Quantité :</span>
+          <div class="qty-wrap">
+            <button class="qty-btn" onclick="changeQty(-1)">−</button>
+            <div class="qty-val" id="qtyVal">1</div>
+            <button class="qty-btn" onclick="changeQty(1)">+</button>
+          </div>
+        </div>
+        <button class="modal-add-btn" onclick="addFromModal()">🛒 Ajouter au panier</button>
+        <button class="modal-wish-btn" onclick="addToWishlist()">♡ Ajouter aux favoris</button>
+        <div class="modal-perks">
+          <div class="perk"><span class="perk-icon">🚚</span> Livraison gratuite dès $200</div>
+          <div class="perk"><span class="perk-icon">🔄</span> Retour sous 30 jours</div>
+          <div class="perk"><span class="perk-icon">🛡️</span> Garantie fabricant incluse</div>
+          <div class="perk"><span class="perk-icon">📱</span> Paiement mobile money accepté</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CART DRAWER ══ -->
+<div class="cart-overlay" id="cartOverlay" onclick="handleCartOverlay(event)">
+  <div class="cart-drawer">
+    <div class="cart-head">
+      <div>
+        <div class="cart-head-title">🛒 Mon Panier</div>
+        <div class="cart-head-sub" id="cartSub">0 article</div>
+      </div>
+      <button class="cart-x" onclick="toggleCart()">✕</button>
+    </div>
+    <div class="cart-body" id="cartBody">
+      <div class="cart-empty-state" id="cartEmpty">
+        <div style="font-size:3rem;margin-bottom:1rem">🛒</div>
+        <div style="font-weight:700;color:var(--g800);margin-bottom:.4rem">Panier vide</div>
+        <div style="font-size:.83rem;color:var(--g400)">Ajoutez des produits pour commencer</div>
+      </div>
+    </div>
+    <div class="cart-foot" id="cartFoot" style="display:none">
+      <div class="cart-total-line"><span>Sous-total</span><span id="cartSubtotal">$0</span></div>
+      <div class="cart-total-line" style="font-size:.8rem;color:var(--g400)"><span>Livraison</span><span id="cartShip">$15</span></div>
+      <div class="cart-grand-line"><span>Total</span><span id="cartTotal">$0</span></div>
+      <button class="cart-checkout-btn" onclick="openCheckout()">Passer la commande →</button>
+      <button class="cart-continue-btn" onclick="toggleCart()">Continuer mes achats</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FAVORIS DRAWER ══ -->
+<div class="fav-overlay" id="favOverlay" onclick="handleFavOverlay(event)">
+  <div class="fav-drawer">
+    <div class="fav-head">
+      <div>
+        <div class="fav-head-title">♡ Mes Favoris</div>
+        <div class="fav-head-sub" id="favSub">0 article</div>
+      </div>
+      <button class="fav-x" onclick="toggleFav()">✕</button>
+    </div>
+    <div class="fav-body" id="favBody">
+      <div class="fav-empty" id="favEmpty">
+        <div style="font-size:3rem;margin-bottom:1rem">♡</div>
+        <div style="font-weight:700;color:var(--g800);margin-bottom:.4rem">Aucun favori</div>
+        <div style="font-size:.83rem;color:var(--g400)">Cliquez sur ♡ pour ajouter un produit</div>
+      </div>
+    </div>
+    <div class="fav-foot" id="favFoot" style="display:none">
+      <button class="fav-add-all" onclick="addAllToCart()">🛒 Tout ajouter au panier</button>
+      <button class="fav-clear" onclick="clearFavoris()">🗑 Vider les favoris</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CHECKOUT MODAL ══ -->
+<div class="co-overlay" id="coOverlay">
+  <div class="co-modal">
+    <!-- Steps -->
+    <div class="co-steps">
+      <div class="co-step active" id="cs1"><div class="co-step-circle" id="cc1">1</div><span class="co-step-label">Livraison</span></div>
+      <div class="co-step-line" id="cl1"></div>
+      <div class="co-step" id="cs2"><div class="co-step-circle" id="cc2">2</div><span class="co-step-label">Paiement</span></div>
+      <div class="co-step-line" id="cl2"></div>
+      <div class="co-step" id="cs3"><div class="co-step-circle" id="cc3">3</div><span class="co-step-label">Confirmation</span></div>
+    </div>
+
+    <!-- Step 1: Livraison -->
+    <div class="co-body" id="coStep1">
+      <div class="co-title">📦 Adresse de livraison</div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Prénom</label><input class="form-input" id="fPrenom" placeholder="Jean"/></div>
+        <div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="fNom" placeholder="Rakoto"/></div>
+      </div>
+      <div class="form-row form-full">
+        <div class="form-group"><label class="form-label">Téléphone</label><input class="form-input" id="fTel" placeholder="+261 34 00 000 00"/></div>
+      </div>
+      <div class="form-row form-full">
+        <div class="form-group"><label class="form-label">Adresse complète</label><input class="form-input" id="fAdresse" placeholder="Lot, rue, quartier..."/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Ville</label>
+          <select class="form-select" id="fVille">
+            <option value="">Choisir...</option>
+            <option>Antananarivo</option><option>Toamasina</option>
+            <option>Fianarantsoa</option><option>Mahajanga</option>
+            <option>Toliara</option><option>Antsiranana</option><option>Autre</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Code postal</label><input class="form-input" id="fCp" placeholder="101"/></div>
+      </div>
+      <div class="co-nav">
+        <button class="co-back" onclick="closeCheckout()">✕ Annuler</button>
+        <button class="co-next" onclick="goStep(2)">Continuer → Paiement</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Paiement -->
+    <div class="co-body" id="coStep2" style="display:none">
+      <div class="co-title">💳 Mode de paiement</div>
+      <div class="pay-grid">
+        <div class="pay-opt sel" id="po_mvola" onclick="selPay('mvola')"><div class="pay-opt-icon">📱</div><div class="pay-opt-name">MVola</div><div class="pay-opt-sub">Telma</div></div>
+        <div class="pay-opt" id="po_orange" onclick="selPay('orange')"><div class="pay-opt-icon">🟠</div><div class="pay-opt-name">Orange Money</div><div class="pay-opt-sub">Orange</div></div>
+        <div class="pay-opt" id="po_airtel" onclick="selPay('airtel')"><div class="pay-opt-icon">🔴</div><div class="pay-opt-name">Airtel Money</div><div class="pay-opt-sub">Airtel</div></div>
+        <div class="pay-opt" id="po_cash" onclick="selPay('cash')"><div class="pay-opt-icon">💵</div><div class="pay-opt-name">Espèces</div><div class="pay-opt-sub">À la livraison</div></div>
+      </div>
+      <div id="payInputZone" style="margin-bottom:1rem"></div>
+      <div class="co-summary">
+        <div class="co-summary-title">Récapitulatif</div>
+        <div id="coSumItems"></div>
+        <div class="co-sum-total"><span>Total à payer</span><span id="coSumTotal">$0</span></div>
+      </div>
+      <div class="co-nav">
+        <button class="co-back" onclick="goStep(1)">← Retour</button>
+        <button class="co-confirm" onclick="confirmOrder()">✅ Confirmer la commande</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Confirmation -->
+    <div class="co-body" id="coStep3" style="display:none">
+      <div class="co-success">
+        <div class="co-success-icon">🎉</div>
+        <h2>Commande confirmée !</h2>
+        <p>Merci pour votre commande. Notre équipe vous contactera dans les <strong>2 heures</strong> pour confirmer la livraison.</p>
+        <div class="co-ref"><div class="co-ref-label">Numéro de commande</div><div class="co-ref-num" id="coRef">#SM-000000</div></div>
+        <div style="background:var(--g50);border-radius:12px;padding:1rem;margin-bottom:1rem;text-align:left">
+          <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--g400);margin-bottom:.5rem">📦 Livraison</div>
+          <div id="coConfLiv" style="font-size:.84rem;color:var(--g600);line-height:1.7"></div>
+        </div>
+        <div style="background:var(--g50);border-radius:12px;padding:1rem;margin-bottom:1rem;text-align:left">
+          <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--g400);margin-bottom:.5rem">💳 Paiement</div>
+          <div id="coConfPay" style="font-size:.84rem;color:var(--g600);line-height:1.7"></div>
+        </div>
+        <div style="background:var(--g50);border-radius:12px;padding:1rem;margin-bottom:1rem;text-align:left">
+          <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--g400);margin-bottom:.5rem">🛒 Articles</div>
+          <div id="coConfItems" style="font-size:.84rem;color:var(--g600)"></div>
+          <div id="coConfTotal" style="font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:800;color:var(--blue2);border-top:1px solid var(--g200);margin-top:.5rem;padding-top:.5rem"></div>
+        </div>
+        <div class="co-info-box">🚚 Livraison estimée : 24–48h &nbsp;|&nbsp; Conservez votre numéro de commande</div>
+        <button class="co-next" style="margin-bottom:.6rem" onclick="generateInvoice()">🖨️ Télécharger la facture</button>
+        <button class="co-next" style="background:var(--g100);color:var(--g800);border:1.5px solid var(--g200)" onclick="finishCheckout()">🏠 Retour à la boutique</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ VIDEO MODAL ══ -->
+<div class="video-overlay" id="videoOverlay" onclick="closeVideoModal()">
+  <div class="video-modal" onclick="event.stopPropagation()">
+    <button class="video-close" onclick="closeVideoModal()">✕</button>
+    <div class="video-wrap">
+      <video id="heroVideo" controls autoplay muted playsinline poster="https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800&q=80">
+        <source src="https://videos.pexels.com/video-files/857195/857195-hd_1920_1080_30fps.mp4" type="video/mp4"/>
+      </video>
+    </div>
+    <div class="video-caption">
+      <div class="video-caption-title">⚡ L'énergie solaire avec Soltex</div>
+      <div class="video-caption-sub">Découvrez comment nous accompagnons les familles et entreprises de Madagascar vers l'indépendance énergétique</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TOAST ══ -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── PRODUCTS DATA ──
+const products = [
+  { id:1, name:"Panneau Monocristallin 200W", cat:"PANNEAUX", type:"Monocristallin", icon:"☀️", imgs:["https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&q=80","https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=600&q=80","https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=600&q=80","https://images.unsplash.com/photo-1559302995-f1d6e557ddc6?w=600&q=80","https://images.unsplash.com/photo-1545209463-e2825498edee?w=600&q=80"], price:99, old:115, badge:"sale",
+    desc:"Panneau monocristallin mi-gamme, parfait pour maison 2–3 pièces.",
+    specs:[{k:"Puissance",v:"200 Wc"},{k:"Rendement",v:"21.0%"},{k:"Dimensions",v:"1320×992 mm"},{k:"Poids",v:"12 kg"},{k:"Garantie",v:"5 ans"},{k:"Certification",v:"IEC 61215"}],
+    feats:["Excellent rapport qualité/prix","Technologie PERC","Résistant humidité et chaleur","Câbles MC4 inclus"]
+  },
+  { id:12, name:"Panneau Monocristallin 300W", cat:"PANNEAUX", type:"Monocristallin", icon:"☀️", imgs:["https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&q=80","https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=600&q=80","https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=600&q=80","https://images.unsplash.com/photo-1559302995-f1d6e557ddc6?w=600&q=80","https://images.unsplash.com/photo-1545209463-e2825498edee?w=600&q=80"], price:149, old:null, badge:"hot",
+    desc:"Notre best-seller — panneau haute performance pour maison ou bureau.",
+    specs:[{k:"Puissance",v:"300 Wc"},{k:"Rendement",v:"21.5%"},{k:"Dimensions",v:"1650×992 mm"},{k:"Poids",v:"18.5 kg"},{k:"Garantie",v:"5 ans"},{k:"Certification",v:"IEC 61215"}],
+    feats:["Best-seller Soltex","Technologie monocristalline PERC","Résistant grêle et vents forts","Compatible tous onduleurs"]
+  },
+  { id:14, name:"Panneau Polycristallin 150W", cat:"PANNEAUX", type:"Polycristallin", icon:"🌤️", imgs:["https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=600&q=80","https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&q=80","https://images.unsplash.com/photo-1559302995-f1d6e557ddc6?w=600&q=80","https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=600&q=80","https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=600&q=80"], price:65, old:80, badge:"sale",
+    desc:"Panneau polycristallin économique, bon rapport performance/prix.",
+    specs:[{k:"Puissance",v:"150 Wc"},{k:"Rendement",v:"16.5%"},{k:"Dimensions",v:"1200×808 mm"},{k:"Poids",v:"11 kg"},{k:"Garantie",v:"3 ans"},{k:"Certification",v:"IEC 61215"}],
+    feats:["Prix très accessible","Bon rendement par temps nuageux","Cadre aluminium anodisé","Livré avec guide d'installation"]
+  },
+  { id:15, name:"Panneau Polycristallin 250W", cat:"PANNEAUX", type:"Polycristallin", icon:"🌤️", imgs:["https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=600&q=80","https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&q=80","https://images.unsplash.com/photo-1559302995-f1d6e557ddc6?w=600&q=80","https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=600&q=80","https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=600&q=80"], price:109, old:null, badge:null,
+    desc:"Panneau polycristallin fiable, idéal pour budgets intermédiaires.",
+    specs:[{k:"Puissance",v:"250 Wc"},{k:"Rendement",v:"17.2%"},{k:"Dimensions",v:"1640×992 mm"},{k:"Poids",v:"16 kg"},{k:"Garantie",v:"3 ans"},{k:"Certification",v:"IEC 61215"}],
+    feats:["Fiabilité prouvée","Performance stable en conditions chaudes","Cadre renforcé","Compatible tous systèmes"]
+  },
+  { id:16, name:"Panneau Bifacial 250W", cat:"PANNEAUX", type:"Bifacial", icon:"✨", imgs:["https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=600&q=80","https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&q=80","https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=600&q=80","https://images.unsplash.com/photo-1592833167665-ebf9d00be8f8?w=600&q=80","https://images.unsplash.com/photo-1559302995-f1d6e557ddc6?w=600&q=80"], price:159, old:185, badge:"sale",
+    desc:"Panneau bifacial compact, capte la lumière des deux faces.",
+    specs:[{k:"Puissance",v:"250 Wc (face)"},{k:"Gain bifacial",v:"+15–20%"},{k:"Rendement",v:"21.5%"},{k:"Dimensions",v:"1480×992 mm"},{k:"Poids",v:"17 kg"},{k:"Garantie",v:"10 ans"}],
+    feats:["Capture lumière recto et verso","Production +15–20% vs standard","Verre double face trempé","Compact, idéal toit moyen"]
+  },
+  { id:18, name:"Panneau Bifacial 350W", cat:"PANNEAUX", type:"Bifacial", icon:"✨", imgs:["https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=600&q=80","https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&q=80","https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=600&q=80","https://images.unsplash.com/photo-1592833167665-ebf9d00be8f8?w=600&q=80","https://images.unsplash.com/photo-1559302995-f1d6e557ddc6?w=600&q=80"], price:219, old:260, badge:"sale",
+    desc:"Panneau bifacial capte la lumière des deux côtés — gain jusqu'à +25% de production.",
+    specs:[{k:"Puissance",v:"350 Wc (face)"},{k:"Gain bifacial",v:"+20–25%"},{k:"Rendement",v:"22.1%"},{k:"Dimensions",v:"1724×1134 mm"},{k:"Poids",v:"22 kg"},{k:"Garantie",v:"12 ans"}],
+    feats:["Capture lumière recto et verso","Production +20–25% vs standard","Verre double face trempé","Idéal toiture claire ou gravier"]
+  },
+  { id:17, name:"Panneau Flexible 50W", cat:"PANNEAUX", type:"Flexible", icon:"🌊", imgs:["https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=600&q=80","https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&q=80","https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=600&q=80","https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=600&q=80","https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=600&q=80"], price:49, old:60, badge:"sale",
+    desc:"Mini panneau souple, parfait pour sac à dos ou petit équipement nomade.",
+    specs:[{k:"Puissance",v:"50 Wc"},{k:"Rendement",v:"22%"},{k:"Épaisseur",v:"2 mm"},{k:"Poids",v:"1 kg"},{k:"Flexibilité",v:"30° courbure max"},{k:"Certification",v:"IP67"}],
+    feats:["Ultra-compact 1 kg","Idéal randonnée et nomadisme","Cellules monocristallines","Résistant à l'eau IP67"]
+  },
+  { id:19, name:"Panneau Flexible 100W", cat:"PANNEAUX", type:"Flexible", icon:"🌊", imgs:["https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=600&q=80","https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&q=80","https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=600&q=80","https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=600&q=80","https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=600&q=80"], price:79, old:95, badge:"new",
+    desc:"Panneau souple ultra-léger, s'adapte aux surfaces courbes (bateau, camping-car).",
+    specs:[{k:"Puissance",v:"100 Wc"},{k:"Rendement",v:"23%"},{k:"Épaisseur",v:"2.5 mm"},{k:"Poids",v:"1.8 kg"},{k:"Flexibilité",v:"30° courbure max"},{k:"Certification",v:"IP67"}],
+    feats:["Ultra-léger 1.8 kg seulement","Courbure jusqu'à 30°","Cellules monocristallines SunPower","Idéal bateaux, camping-cars, tentes"]
+  },
+  { id:2, name:"Batterie AGM 100Ah", cat:"BATTERIES", type:"AGM", icon:"🔋", imgs:["https://images.unsplash.com/photo-1620714223084-862fa1d0e0a6?w=600&q=80","https://images.unsplash.com/photo-1620714223084-862fa1d0e0a6?w=600&q=80","https://images.unsplash.com/photo-1620641622259-3fcc1c8a0e92?w=600&q=80","https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80","https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80"], price:59, old:79, badge:"sale",
+    desc:"Batterie AGM sans entretien, idéale pour systèmes solaires isolés.",
+    specs:[{k:"Capacité",v:"100 Ah"},{k:"Tension",v:"12 V"},{k:"Type",v:"AGM VRLA"},{k:"Poids",v:"28 kg"},{k:"Garantie",v:"2 ans"},{k:"Cert.",v:"CE / UL"}],
+    feats:["Maintenance free — Non spillable","Décharge profonde tolérée","Cycle de vie 500+ cycles","Certifiée CE et UL"]
+  },
+  { id:20, name:"Batterie AGM 200Ah", cat:"BATTERIES", type:"AGM", icon:"🔋", imgs:["https://images.unsplash.com/photo-1620714223084-862fa1d0e0a6?w=600&q=80","https://images.unsplash.com/photo-1620641622259-3fcc1c8a0e92?w=600&q=80","https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80","https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80","https://images.unsplash.com/photo-1620714223084-862fa1d0e0a6?w=600&q=80"], price:109, old:135, badge:"sale",
+    desc:"Batterie AGM grande capacité pour installations résidentielles complètes.",
+    specs:[{k:"Capacité",v:"200 Ah"},{k:"Tension",v:"12 V"},{k:"Type",v:"AGM VRLA"},{k:"Poids",v:"52 kg"},{k:"Garantie",v:"2 ans"},{k:"Cert.",v:"CE / UL"}],
+    feats:["Grande autonomie","Maintenance free — Non spillable","Idéale pour kit solaire complet","Certifiée CE et UL"]
+  },
+  { id:21, name:"Batterie Gel 100Ah", cat:"BATTERIES", type:"Gel", icon:"🔋", imgs:["https://images.unsplash.com/photo-1620641622259-3fcc1c8a0e92?w=600&q=80","https://images.unsplash.com/photo-1620714223084-862fa1d0e0a6?w=600&q=80","https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80","https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80","https://images.unsplash.com/photo-1620641622259-3fcc1c8a0e92?w=600&q=80"], price:75, old:90, badge:"sale",
+    desc:"Batterie Gel longue durée, résistante aux fortes chaleurs.",
+    specs:[{k:"Capacité",v:"100 Ah"},{k:"Tension",v:"12 V"},{k:"Type",v:"Gel VRLA"},{k:"Poids",v:"30 kg"},{k:"Garantie",v:"3 ans"},{k:"Cert.",v:"CE / IEC"}],
+    feats:["Excellente résistance à la chaleur","Cycle de vie 800+ cycles","Idéale climat tropical","Faible auto-décharge"]
+  },
+  { id:22, name:"Batterie Gel 150Ah", cat:"BATTERIES", type:"Gel", icon:"🔋", imgs:["https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80","https://images.unsplash.com/photo-1620641622259-3fcc1c8a0e92?w=600&q=80","https://images.unsplash.com/photo-1620714223084-862fa1d0e0a6?w=600&q=80","https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80","https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80"], price:115, old:null, badge:"new",
+    desc:"Batterie Gel haute capacité, parfaite pour usage intensif quotidien.",
+    specs:[{k:"Capacité",v:"150 Ah"},{k:"Tension",v:"12 V"},{k:"Type",v:"Gel VRLA"},{k:"Poids",v:"42 kg"},{k:"Garantie",v:"3 ans"},{k:"Cert.",v:"CE / IEC"}],
+    feats:["Haute capacité 150Ah","Très faible auto-décharge","Résistante aux vibrations","Garantie 3 ans"]
+  },
+  { id:23, name:"Batterie Lithium LiFePO4 100Ah", cat:"BATTERIES", type:"Lithium", icon:"🔋", imgs:["https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80","https://images.unsplash.com/photo-1620714223084-862fa1d0e0a6?w=600&q=80","https://images.unsplash.com/photo-1620641622259-3fcc1c8a0e92?w=600&q=80","https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80","https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80"], price:199, old:240, badge:"sale",
+    desc:"Batterie Lithium nouvelle génération, légère et très longue durée de vie.",
+    specs:[{k:"Capacité",v:"100 Ah"},{k:"Tension",v:"12.8 V"},{k:"Type",v:"LiFePO4"},{k:"Poids",v:"12 kg"},{k:"Garantie",v:"8 ans"},{k:"Cycles",v:"4000+ cycles"}],
+    feats:["Ultra-légère — 12 kg seulement","4000+ cycles de charge","BMS intégré (protection)","Charge rapide compatible"]
+  },
+  { id:24, name:"Batterie Lithium LiFePO4 200Ah", cat:"BATTERIES", type:"Lithium", icon:"🔋", imgs:["https://images.unsplash.com/photo-1620641622259-3fcc1c8a0e92?w=600&q=80","https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80","https://images.unsplash.com/photo-1620714223084-862fa1d0e0a6?w=600&q=80","https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80","https://images.unsplash.com/photo-1620641622259-3fcc1c8a0e92?w=600&q=80"], price:359, old:420, badge:"hot",
+    desc:"Batterie Lithium haute capacité, idéale pour installations professionnelles.",
+    specs:[{k:"Capacité",v:"200 Ah"},{k:"Tension",v:"12.8 V"},{k:"Type",v:"LiFePO4"},{k:"Poids",v:"22 kg"},{k:"Garantie",v:"10 ans"},{k:"Cycles",v:"6000+ cycles"}],
+    feats:["Performance professionnelle","6000+ cycles de charge","BMS intelligent intégré","Compatible montage parallèle"]
+  },
+  { id:25, name:"Batterie Acide-Plomb 100Ah", cat:"BATTERIES", type:"Acide-Plomb", icon:"🔋", imgs:["https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80","https://images.unsplash.com/photo-1620714223084-862fa1d0e0a6?w=600&q=80","https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80","https://images.unsplash.com/photo-1620641622259-3fcc1c8a0e92?w=600&q=80","https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80"], price:45, old:58, badge:"sale",
+    desc:"Batterie acide-plomb classique, solution économique et éprouvée.",
+    specs:[{k:"Capacité",v:"100 Ah"},{k:"Tension",v:"12 V"},{k:"Type",v:"Acide-Plomb"},{k:"Poids",v:"27 kg"},{k:"Garantie",v:"1 an"},{k:"Cert.",v:"CE"}],
+    feats:["Prix très accessible","Technologie éprouvée","Facile à entretenir","Bon rapport qualité/prix"]
+  },
+  { id:26, name:"Batterie Acide-Plomb 150Ah", cat:"BATTERIES", type:"Acide-Plomb", icon:"🔋", imgs:["https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80","https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80","https://images.unsplash.com/photo-1620641622259-3fcc1c8a0e92?w=600&q=80","https://images.unsplash.com/photo-1620714223084-862fa1d0e0a6?w=600&q=80","https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80"], price:65, old:null, badge:null,
+    desc:"Batterie acide-plomb grande capacité pour usage domestique standard.",
+    specs:[{k:"Capacité",v:"150 Ah"},{k:"Tension",v:"12 V"},{k:"Type",v:"Acide-Plomb"},{k:"Poids",v:"40 kg"},{k:"Garantie",v:"1 an"},{k:"Cert.",v:"CE"}],
+    feats:["Capacité 150Ah économique","Robuste et fiable","Compatible tous régulateurs","Entretien simple"]
+  },
+  { id:3, name:"Onduleur Pur Sinus 1000W", cat:"ONDULEURS", type:"Pur Sinus", icon:"⚡", imgs:["https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80","https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80","https://images.unsplash.com/photo-1620641622259-3fcc1c8a0e92?w=600&q=80","https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&q=80","https://images.unsplash.com/photo-1601275334966-bd2bb1c6e2da?w=600&q=80"], price:210, old:null, badge:null,
+    desc:"Onduleur pur sinus 1000W, compatible tous appareils électroniques sensibles.",
+    specs:[{k:"Puissance",v:"1000 W"},{k:"Entrée",v:"12 V DC"},{k:"Sortie",v:"220 V AC"},{k:"Rendement",v:"93%"},{k:"Poids",v:"3.2 kg"},{k:"Protection",v:"Surcharge/CC"}],
+    feats:["Onde sinusoïdale pure","Compatible électronique sensible","Affichage LCD","Ventilateur silencieux thermostatique"]
+  },
+  { id:27, name:"Onduleur Pur Sinus 2000W", cat:"ONDULEURS", type:"Pur Sinus", icon:"⚡", imgs:["https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80","https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80","https://images.unsplash.com/photo-1620641622259-3fcc1c8a0e92?w=600&q=80","https://images.unsplash.com/photo-1601275334966-bd2bb1c6e2da?w=600&q=80","https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&q=80"], price:349, old:399, badge:"sale",
+    desc:"Onduleur pur sinus haute puissance pour alimenter réfrigérateur, pompe, télévision.",
+    specs:[{k:"Puissance",v:"2000 W"},{k:"Entrée",v:"24 V DC"},{k:"Sortie",v:"220 V AC"},{k:"Rendement",v:"94%"},{k:"Poids",v:"5.8 kg"},{k:"Protection",v:"Multi-protection"}],
+    feats:["Haute puissance 2000W","Idéal réfrigérateur et pompe","Double protection thermique","Télécommande incluse"]
+  },
+  { id:28, name:"Onduleur Quasi Sinus 500W", cat:"ONDULEURS", type:"Quasi Sinus", icon:"⚡", imgs:["https://images.unsplash.com/photo-1620641622259-3fcc1c8a0e92?w=600&q=80","https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80","https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80","https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&q=80","https://images.unsplash.com/photo-1601275334966-bd2bb1c6e2da?w=600&q=80"], price:89, old:110, badge:"sale",
+    desc:"Onduleur quasi sinus économique, idéal pour éclairage et chargeurs.",
+    specs:[{k:"Puissance",v:"500 W"},{k:"Entrée",v:"12 V DC"},{k:"Sortie",v:"220 V AC"},{k:"Rendement",v:"88%"},{k:"Poids",v:"1.5 kg"},{k:"Protection",v:"Surcharge/CC"}],
+    feats:["Prix très accessible","Léger et compact","Idéal éclairage et chargeurs","Protection surcharge intégrée"]
+  },
+  { id:29, name:"Onduleur Quasi Sinus 1500W", cat:"ONDULEURS", type:"Quasi Sinus", icon:"⚡", imgs:["https://images.unsplash.com/photo-1601275334966-bd2bb1c6e2da?w=600&q=80","https://images.unsplash.com/photo-1620641622259-3fcc1c8a0e92?w=600&q=80","https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80","https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80","https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&q=80"], price:159, old:190, badge:"sale",
+    desc:"Onduleur quasi sinus 1500W, bon rapport qualité/prix pour usage domestique.",
+    specs:[{k:"Puissance",v:"1500 W"},{k:"Entrée",v:"12 V DC"},{k:"Sortie",v:"220 V AC"},{k:"Rendement",v:"90%"},{k:"Poids",v:"3 kg"},{k:"Protection",v:"Multi-protection"}],
+    feats:["Puissance intermédiaire 1500W","Bon rapport qualité/prix","Ventilateur automatique","Affichage LED"]
+  },
+  { id:4, name:"Régulateur PWM 20A", cat:"RÉGULATEURS", type:"PWM", icon:"🔌", imgs:["https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80","https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80","https://images.unsplash.com/photo-1620641622259-3fcc1c8a0e92?w=600&q=80","https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&q=80","https://images.unsplash.com/photo-1601275334966-bd2bb1c6e2da?w=600&q=80"], price:25, old:35, badge:"sale",
+    desc:"Régulateur PWM économique, idéal pour petites installations 12V/24V.",
+    specs:[{k:"Courant",v:"20 A"},{k:"Tension PV",v:"50 V max"},{k:"Batterie",v:"12/24 V auto"},{k:"Efficacité",v:"85%"},{k:"Affichage",v:"LCD"},{k:"Garantie",v:"1 an"}],
+    feats:["Prix très accessible","Simple à installer","Détection auto 12/24V","Idéal petite installation"]
+  },
+  { id:30, name:"Régulateur PWM 40A", cat:"RÉGULATEURS", type:"PWM", icon:"🔌", imgs:["https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&q=80","https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80","https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80","https://images.unsplash.com/photo-1620641622259-3fcc1c8a0e92?w=600&q=80","https://images.unsplash.com/photo-1601275334966-bd2bb1c6e2da?w=600&q=80"], price:45, old:58, badge:"sale",
+    desc:"Régulateur PWM 40A robuste pour installations résidentielles standard.",
+    specs:[{k:"Courant",v:"40 A"},{k:"Tension PV",v:"55 V max"},{k:"Batterie",v:"12/24 V auto"},{k:"Efficacité",v:"87%"},{k:"Affichage",v:"LCD"},{k:"Garantie",v:"1 an"}],
+    feats:["Robuste et fiable","Compatible batteries AGM/Gel","Protection court-circuit","Affichage LCD clair"]
+  },
+  { id:31, name:"Régulateur MPPT 30A", cat:"RÉGULATEURS", type:"MPPT", icon:"🔌", imgs:["https://images.unsplash.com/photo-1620641622259-3fcc1c8a0e92?w=600&q=80","https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80","https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80","https://images.unsplash.com/photo-1601275334966-bd2bb1c6e2da?w=600&q=80","https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&q=80"], price:69, old:85, badge:"sale",
+    desc:"Régulateur MPPT 30A haute efficacité pour maximiser la production solaire.",
+    specs:[{k:"Courant",v:"30 A"},{k:"Tension PV",v:"100 V max"},{k:"Batterie",v:"12/24 V auto"},{k:"Efficacité",v:"98%"},{k:"Affichage",v:"LCD"},{k:"Garantie",v:"2 ans"}],
+    feats:["Algorithme MPPT avancé","Efficacité 98%","Détection auto 12/24V","Historique journalier"]
+  },
+  { id:32, name:"Régulateur MPPT 40A", cat:"RÉGULATEURS", type:"MPPT", icon:"🔌", imgs:["https://images.unsplash.com/photo-1601275334966-bd2bb1c6e2da?w=600&q=80","https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80","https://images.unsplash.com/photo-1620641622259-3fcc1c8a0e92?w=600&q=80","https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80","https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&q=80"], price:89, old:110, badge:"hot",
+    desc:"Régulateur MPPT 40A premium, meilleur rendement du marché.",
+    specs:[{k:"Courant",v:"40 A"},{k:"Tension PV",v:"100 V max"},{k:"Batterie",v:"12/24 V auto"},{k:"Efficacité",v:"99%"},{k:"Affichage",v:"LCD"},{k:"Garantie",v:"2 ans"}],
+    feats:["Efficacité 99% — meilleur du marché","Protection surtensions avancée","Compatible Lithium/AGM/Gel","Application Bluetooth optionnelle"]
+  },
+  { id:5, name:"Câble Solaire 6mm² (10m)", cat:"ACCESSOIRES", icon:"🔧", imgs:["https://images.unsplash.com/photo-1601275334966-bd2bb1c6e2da?w=600&q=80","https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&q=80","https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80","https://images.unsplash.com/photo-1620641622259-3fcc1c8a0e92?w=600&q=80","https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80"], price:18, old:25, badge:"sale",
+    desc:"Câble photovoltaïque double isolation UV, idéal pour connexions panneau.",
+    specs:[{k:"Section",v:"6 mm²"},{k:"Longueur",v:"10 m"},{k:"Tension max",v:"1500 V DC"},{k:"Couleur",v:"Rouge/Noir"},{k:"Norme",v:"EN 50618"},{k:"Temp.",v:"-40°C à +90°C"}],
+    feats:["Double isolation résistante UV","Certifié EN 50618","Compatible connecteurs MC4","Flexible et résistant à la chaleur"]
+  },
+  { id:6, name:"Connecteurs MC4 (paire x5)", cat:"ACCESSOIRES", icon:"🔩", imgs:["https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&q=80","https://images.unsplash.com/photo-1601275334966-bd2bb1c6e2da?w=600&q=80","https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80","https://images.unsplash.com/photo-1620641622259-3fcc1c8a0e92?w=600&q=80","https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80"], price:12, old:null, badge:"new",
+    desc:"Connecteurs MC4 imperméables IP67 pour assemblage de panneaux solaires.",
+    specs:[{k:"Quantité",v:"5 paires"},{k:"Courant max",v:"30 A"},{k:"Tension max",v:"1000 V DC"},{k:"Protection",v:"IP67"},{k:"Matériau",v:"PP + cuivre"},{k:"Norme",v:"TÜV IEC"}],
+    feats:["Étanché IP67 — résistant à la pluie","Connexion rapide sans outil","Certifiés TÜV","Compatibles tous panneaux MC4"]
+  },
+  { id:7, name:"Support Panneau Incliné 30°", cat:"ACCESSOIRES", icon:"🔨", imgs:["https://images.unsplash.com/photo-1597008641223-6a1eba0743a7?w=600&q=80","https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&q=80","https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=600&q=80","https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=600&q=80","https://images.unsplash.com/photo-1559302995-f1d6e557ddc6?w=600&q=80"], price:35, old:45, badge:"sale",
+    desc:"Structure aluminium pour montage de panneaux sur toit plat ou terrasse.",
+    specs:[{k:"Matériau",v:"Aluminium 6005-T5"},{k:"Inclinaison",v:"15°–45° réglable"},{k:"Charge max",v:"50 kg"},{k:"Panneaux",v:"1 panneau"},{k:"Fixation",v:"Vis inox"},{k:"Garantie",v:"10 ans"}],
+    feats:["Aluminium anodisé anti-corrosion","Inclinaison réglable 15°–45°","Installation rapide","Résistant au vent 140 km/h"]
+  },
+  { id:8, name:"Kit Ampoules LED 12V (×10)", cat:"ACCESSOIRES", icon:"💡", imgs:["https://images.unsplash.com/photo-1565374395542-0e7b0d0c8bd9?w=600&q=80","https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80","https://images.unsplash.com/photo-1620641622259-3fcc1c8a0e92?w=600&q=80","https://images.unsplash.com/photo-1601275334966-bd2bb1c6e2da?w=600&q=80","https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80"], price:22, old:32, badge:"sale",
+    desc:"Ampoules LED basse consommation compatibles 12V solaire.",
+    specs:[{k:"Voltage",v:"12 V DC"},{k:"Puissance",v:"7 W"},{k:"Flux",v:"700 lm"},{k:"Durée vie",v:"25 000 h"},{k:"Couleur",v:"Blanc chaud"},{k:"Culot",v:"E27"}],
+    feats:["Consommation réduite 80%","Compatibles 12V DC","Lumière sans scintillement","Résistantes aux coupures"]
+  },
+  { id:9, name:"Fusible 30A + Porte-fusible", cat:"ACCESSOIRES", icon:"⚙️", imgs:["https://images.unsplash.com/photo-1620641622259-3fcc1c8a0e92?w=600&q=80","https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80","https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80","https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=600&q=80","https://images.unsplash.com/photo-1601275334966-bd2bb1c6e2da?w=600&q=80"], price:8, old:null, badge:null,
+    desc:"Protection indispensable pour circuits solaires 12V/24V.",
+    specs:[{k:"Intensité",v:"30 A"},{k:"Tension",v:"12–24 V"},{k:"Type",v:"ANL / Lame"},{k:"Matériau",v:"Cuivre"},{k:"Inclus",v:"Porte-fusible"},{k:"IP",v:"IP54"}],
+    feats:["Protection contre les courts-circuits","Installation facile","Compatible câbles jusqu'à 6mm²","Indicateur visuel de fusion"]
+  },
+  { id:10, name:"Kit Solaire Complet 500W", cat:"KITS", icon:"🏠", imgs:["https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=600&q=80","https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&q=80","https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=600&q=80","https://images.unsplash.com/photo-1620714223084-862fa1d0e0a6?w=600&q=80","https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=600&q=80"], price:499, old:650, badge:"hot",
+    desc:"Kit clé en main : 2×250W + batterie 200Ah + régulateur + onduleur.",
+    specs:[{k:"Panneaux",v:"2× 250 Wc"},{k:"Batterie",v:"200 Ah AGM"},{k:"Régulateur",v:"MPPT 30A"},{k:"Onduleur",v:"1500 W"},{k:"Câblage",v:"Complet inclus"},{k:"Installation",v:"Notice + support"}],
+    feats:["Tout inclus, prêt à installer","Alimente jusqu'à 5 appareils","Autonomie 2 jours sans soleil","Support technique 6 mois offert"]
+  },
+  { id:33, name:"Kit Solaire Débutant 200W", cat:"KITS", icon:"🏠", imgs:["https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&q=80","https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=600&q=80","https://images.unsplash.com/photo-1620714223084-862fa1d0e0a6?w=600&q=80","https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=600&q=80","https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=600&q=80"], price:189, old:240, badge:"new",
+    desc:"Kit idéal pour débutants : panneau 200W + batterie 100Ah + régulateur PWM.",
+    specs:[{k:"Panneau",v:"1× 200 Wc"},{k:"Batterie",v:"100 Ah AGM"},{k:"Régulateur",v:"PWM 20A"},{k:"Onduleur",v:"Non inclus"},{k:"Câblage",v:"Complet inclus"},{k:"Installation",v:"Notice détaillée"}],
+    feats:["Parfait pour débuter","Installation en 1h","Alimente éclairage + chargeurs","Prix très accessible"]
+  },
+  { id:34, name:"Kit Solaire Maison 1000W", cat:"KITS", icon:"🏠", imgs:["https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=600&q=80","https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&q=80","https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=600&q=80","https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=600&q=80","https://images.unsplash.com/photo-1620714223084-862fa1d0e0a6?w=600&q=80"], price:899, old:1100, badge:"sale",
+    desc:"Kit complet pour maison 4–6 pièces : 4×250W + batterie Lithium + MPPT + onduleur pur sinus.",
+    specs:[{k:"Panneaux",v:"4× 250 Wc"},{k:"Batterie",v:"200 Ah LiFePO4"},{k:"Régulateur",v:"MPPT 40A"},{k:"Onduleur",v:"2000 W Pur Sinus"},{k:"Câblage",v:"Complet inclus"},{k:"Autonomie",v:"3–4 jours"}],
+    feats:["Puissance 1000W totale","Batterie Lithium longue durée","Alimente réfrigérateur + TV + éclairage","Support technique 12 mois"]
+  },
+  { id:35, name:"Kit Solaire Professionnel 2000W", cat:"KITS", icon:"🏠", imgs:["https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=600&q=80","https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=600&q=80","https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&q=80","https://images.unsplash.com/photo-1620714223084-862fa1d0e0a6?w=600&q=80","https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=600&q=80"], price:1699, old:2100, badge:"sale",
+    desc:"Solution professionnelle pour entreprise ou grande maison — autonomie maximale.",
+    specs:[{k:"Panneaux",v:"8× 250 Wc"},{k:"Batterie",v:"400 Ah LiFePO4"},{k:"Régulateur",v:"MPPT 60A"},{k:"Onduleur",v:"3000 W Pur Sinus"},{k:"Câblage",v:"Pro inclus"},{k:"Autonomie",v:"5–7 jours"}],
+    feats:["Installation professionnelle complète","Batterie Lithium 400Ah haute capacité","Alimente pompe + climatiseur + bureau","Garantie 2 ans + maintenance incluse"]
+  },
+  { id:36, name:"Kit Solaire Nomade 100W", cat:"KITS", icon:"🏠", imgs:["https://images.unsplash.com/photo-1620714223084-862fa1d0e0a6?w=600&q=80","https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&q=80","https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=600&q=80","https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=600&q=80","https://images.unsplash.com/photo-1591453089816-0fbb971b454c?w=600&q=80"], price:149, old:185, badge:"new",
+    desc:"Kit portable pour camping, voyage et zones isolées — léger et compact.",
+    specs:[{k:"Panneau",v:"1× 100 Wc Flexible"},{k:"Batterie",v:"50 Ah LiFePO4"},{k:"Régulateur",v:"MPPT 10A"},{k:"Sortie",v:"USB + 12V DC"},{k:"Poids total",v:"5 kg"},{k:"Transport",v:"Sac inclus"}],
+    feats:["Ultra-portable 5 kg","Panneau flexible inclus","Charge téléphones + laptop + LED","Idéal randonnée et zones rurales"]
+  },
+];
+
+// ── STATE ──
+let cartItems = [];
+let currentProduct = null;
+let modalQty = 1;
+let modalSlideIdx = 0;
+let selectedPay = 'mvola';
+let currentStep = 1;
+
+// ── PANEL GRID ANIMATION ──
+const pg = document.getElementById('panelGrid');
+if(pg) { for(let i=0;i<25;i++){ const c=document.createElement('div'); c.className='panel-cell'; c.style.setProperty('--d',i); pg.appendChild(c); } }
+
+// ── SCROLL ──
+function scrollToSection(id){ document.getElementById(id)?.scrollIntoView({behavior:'smooth'}); }
+window.addEventListener('scroll',()=>{
+  document.getElementById('mainNav').classList.toggle('scrolled',window.scrollY>20);
+});
+
+// ── MOBILE MENU ──
+function toggleMenu(){
+  const m=document.getElementById('navMenu');
+  m.style.display = m.style.display==='flex' ? 'none' : 'flex';
+  m.style.flexDirection='column';
+  m.style.position='absolute';
+  m.style.top='68px';m.style.left='0';m.style.right='0';
+  m.style.background='rgba(6,14,31,.98)';
+  m.style.padding='1rem 2rem 1.5rem';
+  m.style.gap='1rem';
+}
+
+// ── FILTER ──
+let activeCat = 'KITS';
+let activeType = 'all';
+
+function filterCat(cat){
+  activeCat = cat;
+  activeType = 'all';
+  document.querySelectorAll('.sub-tab').forEach(t=>t.classList.toggle('active', t.textContent.includes('Tous')));
+  document.getElementById('panneau-subfilter').style.display    = cat==='PANNEAUX'    ? 'block' : 'none';
+  document.getElementById('batterie-subfilter').style.display   = cat==='BATTERIES'   ? 'block' : 'none';
+  document.getElementById('onduleur-subfilter').style.display   = cat==='ONDULEURS'   ? 'block' : 'none';
+  document.getElementById('regulateur-subfilter').style.display = cat==='RÉGULATEURS' ? 'block' : 'none';
+  document.querySelectorAll('.cat-tab').forEach(t=>{
+    const tCat = t.textContent.trim()==='Tous' ? 'all'
+      : t.textContent.includes('Panneaux') ? 'PANNEAUX'
+      : t.textContent.includes('Batteries') ? 'BATTERIES'
+      : t.textContent.includes('Onduleurs') ? 'ONDULEURS'
+      : t.textContent.includes('Régulateurs') ? 'RÉGULATEURS'
+      : t.textContent.includes('Accessoires') ? 'ACCESSOIRES'
+      : t.textContent.includes('Accessoires') ? 'ACCESSOIRES'
+      : t.textContent.includes('Pack Complet') ? 'KITS' : '';
+    t.classList.toggle('active', tCat === cat);
+  });
+  renderProducts();
+}
+
+function filterType(type){
+  activeType = type;
+  document.querySelectorAll('.sub-tab').forEach(t=>{
+    const txt = t.textContent;
+    const tType = txt.includes('Tous') ? 'all'
+      : txt.includes('Monocristallin') ? 'Monocristallin'
+      : txt.includes('Polycristallin') ? 'Polycristallin'
+      : txt.includes('Bifacial') ? 'Bifacial'
+      : txt.includes('Flexible') ? 'Flexible'
+      : txt.includes('Lithium') ? 'Lithium'
+      : txt.includes('Gel') ? 'Gel'
+      : txt.includes('AGM') ? 'AGM'
+      : txt.includes('Acide-Plomb') ? 'Acide-Plomb'
+      : txt.includes('Pur Sinus') ? 'Pur Sinus'
+      : txt.includes('Quasi Sinus') ? 'Quasi Sinus'
+      : txt.includes('PWM') ? 'PWM'
+      : txt.includes('MPPT') ? 'MPPT' : '';
+    t.classList.toggle('active', tType === type);
+  });
+  renderProducts();
+}
+
+// ── RENDER PRODUCTS ──
+function renderProducts(){
+  let filtered = activeCat==='all' ? products : products.filter(p=>p.cat===activeCat);
+  const catsWithType = ['PANNEAUX','BATTERIES','ONDULEURS','RÉGULATEURS'];
+  if(catsWithType.includes(activeCat) && activeType!=='all'){
+    filtered = filtered.filter(p=>p.type===activeType);
+  }
+  const grid = document.getElementById('productGrid');
+  if(!filtered.length){
+    grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--g400)">Aucun produit dans cette catégorie.</div>';
+    return;
+  }
+  grid.innerHTML = filtered.map(p=>{
+    const slides3 = p.cat==='KITS' ? p.imgs : p.imgs.slice(0,3);
+    const slidesHtml = slides3.map((u,i)=>`
+      <div class="card-slide${i===0?' active':''}">
+        <img src="${u}" alt="${p.name}" loading="lazy"/>
+      </div>`).join('');
+    const dotsHtml = slides3.length>1 ? `<div class="card-slide-dots">${slides3.map((_,i)=>`<div class="card-slide-dot${i===0?' active':''}"></div>`).join('')}</div>` : '';
+    return `
+    <div class="product-card" onclick="openModal(${p.id})" data-id="${p.id}">
+      ${p.badge==='new'?'<span class="card-badge badge-new">Nouveau</span>':''}
+      ${p.badge==='sale'?`<span class="card-badge badge-sale">-${Math.round((1-p.price/p.old)*100)}%</span>`:''}
+      ${p.badge==='hot'?'<span class="card-badge badge-hot">🔥 Best-seller</span>':''}
+      <div class="card-img">
+        ${slidesHtml}
+        ${dotsHtml}
+      </div>
+      <div class="card-body">
+        <div class="card-cat">${p.cat}</div>
+        <div class="card-name">${p.name}</div>
+        <div class="card-desc">${p.desc}</div>
+        <div class="card-footer">
+          <div>
+            <span class="card-price-now">$${p.price}</span>
+            ${p.old?`<span class="card-price-old">$${p.old}</span>`:''}
+          </div>
+          <button class="card-add" onclick="event.stopPropagation();openModal(${p.id})">+</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  // Start card slideshows
+  startCardSlideshows();
+}
+
+// ── CARD SLIDESHOWS ──
+let cardTimers = [];
+function startCardSlideshows(){
+  cardTimers.forEach(t=>clearInterval(t));
+  cardTimers = [];
+  document.querySelectorAll('.product-card').forEach(card=>{
+    const slides = card.querySelectorAll('.card-slide');
+    const dots = card.querySelectorAll('.card-slide-dot');
+    if(slides.length<=1) return;
+    let idx=0;
+    const t = setInterval(()=>{
+      slides[idx].classList.remove('active');
+      dots[idx]?.classList.remove('active');
+      idx=(idx+1)%slides.length;
+      slides[idx].classList.add('active');
+      dots[idx]?.classList.add('active');
+    }, 3000);
+    cardTimers.push(t);
+  });
+}
+
+// ── MODAL ──
+function openModal(id){
+  currentProduct = products.find(p=>p.id===id);
+  modalQty = 1;
+  document.getElementById('qtyVal').textContent = 1;
+  document.getElementById('mName').textContent = currentProduct.name;
+  document.getElementById('mCat').textContent = currentProduct.cat;
+  document.getElementById('mPhoto').src = currentProduct.imgs[0];
+  document.getElementById('mPhoto').alt = currentProduct.name;
+
+  // Build captions from specs (1 per image, cycle through specs)
+  const specs = currentProduct.specs;
+  currentProduct._captions = currentProduct.imgs.map((_, i) => {
+    const s = specs[i % specs.length];
+    return s ? { icon: getCaptionIcon(s.k), text: `${s.k} : ${s.v}` } : { icon: '📸', text: currentProduct.name };
+  });
+
+  // Set first caption
+  setCaption(0);
+
+  document.getElementById('mThumbs').innerHTML = currentProduct.imgs.map((u,idx)=>`
+    <div class="modal-thumb${idx===0?' active':''}" onclick="switchPhoto(${idx})">
+      <img src="${u}" alt="${currentProduct.name} ${idx+1}"/>
+    </div>`).join('');
+  modalSlideIdx = 0;
+  document.getElementById('mPrice').textContent = `$${currentProduct.price}`;
+  const oldEl=document.getElementById('mOld');
+  const discEl=document.getElementById('mDisc');
+  if(currentProduct.old){
+    oldEl.textContent=`$${currentProduct.old}`;
+    discEl.textContent=`-${Math.round((1-currentProduct.price/currentProduct.old)*100)}%`;
+    discEl.style.display='inline-block';
+  } else { oldEl.textContent=''; discEl.style.display='none'; }
+  document.getElementById('mSpecs').innerHTML = currentProduct.specs.map(s=>`
+    <div class="spec-box"><div class="spec-box-key">${s.k}</div><div class="spec-box-val">${s.v}</div></div>`).join('');
+  document.getElementById('mFeatures').innerHTML = currentProduct.feats.map(f=>`
+    <li><span class="feat-check">✓</span>${f}</li>`).join('');
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function setCaption(idx){
+  const cap = currentProduct._captions && currentProduct._captions[idx];
+  const textEl = document.getElementById('mCaptionText');
+  const iconEl = document.getElementById('mCaptionIcon');
+  if(cap){ textEl.style.opacity='0'; setTimeout(()=>{ iconEl.textContent=cap.icon; textEl.textContent=cap.text; textEl.style.opacity='1'; },150); }
+}
+function getCaptionIcon(key){
+  const k=key.toLowerCase();
+  if(k.includes('puissance')||k.includes('watt')) return '⚡';
+  if(k.includes('rendement')) return '📈';
+  if(k.includes('poids')) return '⚖️';
+  if(k.includes('dimension')||k.includes('taille')) return '📐';
+  if(k.includes('garantie')) return '🛡️';
+  if(k.includes('capacit')) return '🔋';
+  if(k.includes('tension')||k.includes('voltage')) return '🔌';
+  if(k.includes('cert')) return '✅';
+  if(k.includes('cycle')) return '🔄';
+  if(k.includes('temp')) return '🌡️';
+  if(k.includes('flex')) return '🌊';
+  return '📋';
+}
+function switchPhoto(idx){
+  modalSlideIdx = idx;
+  document.getElementById('mPhoto').src = currentProduct.imgs[idx];
+  document.querySelectorAll('.modal-thumb').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  setCaption(idx);
+}
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+function handleModalOverlay(e){ if(e.target===document.getElementById('modalOverlay')) closeModal(); }
+function changeQty(d){ modalQty=Math.max(1,modalQty+d); document.getElementById('qtyVal').textContent=modalQty; }
+function addFromModal(){ addToCart(currentProduct,modalQty); toast(`${modalQty}× ${currentProduct.name} ajouté !`); closeModal(); }
+// ── FAVORIS ──
+let favoris = [];
+
+function addToWishlist(){
+  if(!currentProduct) return;
+  const exists = favoris.find(p=>p.id===currentProduct.id);
+  if(exists){
+    toast(`💜 "${currentProduct.name}" déjà dans vos favoris !`);
+    return;
+  }
+  favoris.push(currentProduct);
+  renderFavoris();
+  toast(`♡ ${currentProduct.name} ajouté aux favoris !`);
+}
+
+function removeFromFav(id){
+  favoris = favoris.filter(p=>p.id!==id);
+  renderFavoris();
+}
+
+function addFavToCart(id){
+  const p = favoris.find(f=>f.id===id);
+  if(p){ addToCart(p,1); toast(`🛒 ${p.name} ajouté au panier !`); }
+}
+
+function addAllToCart(){
+  favoris.forEach(p=>addToCart(p,1));
+  toast(`🛒 ${favoris.length} produit(s) ajouté(s) au panier !`);
+  toggleFav();
+}
+
+function clearFavoris(){
+  favoris=[];
+  renderFavoris();
+  toast('🗑 Favoris vidés.');
+}
+
+function renderFavoris(){
+  const count=favoris.length;
+  const badge=document.getElementById('favCount');
+  badge.textContent=count;
+  badge.style.display=count>0?'flex':'none';
+  document.getElementById('favSub').textContent=`${count} article${count!==1?'s':''}`;
+  const body=document.getElementById('favBody');
+  const foot=document.getElementById('favFoot');
+  if(!count){
+    body.innerHTML='<div class="fav-empty"><div style="font-size:3rem;margin-bottom:1rem">♡</div><div style="font-weight:700;color:var(--g800);margin-bottom:.4rem">Aucun favori</div><div style="font-size:.83rem;color:var(--g400)">Cliquez sur ♡ pour ajouter un produit</div></div>';
+    foot.style.display='none';
+    return;
+  }
+  foot.style.display='block';
+  body.innerHTML=favoris.map(p=>`
+    <div class="fav-item">
+      <div class="fav-item-img"><img src="${p.imgs[0]}" alt="${p.name}"/></div>
+      <div class="fav-item-info">
+        <div class="fav-item-name">${p.name}</div>
+        <div class="fav-item-price">$${p.price}${p.old?` <span style="font-size:.72rem;color:var(--g400);text-decoration:line-through;font-weight:400">$${p.old}</span>`:''}</div>
+      </div>
+      <div class="fav-item-actions">
+        <button class="fav-to-cart" onclick="addFavToCart(${p.id})">🛒 Panier</button>
+        <button class="fav-remove" onclick="removeFromFav(${p.id})">✕ Retirer</button>
+      </div>
+    </div>`).join('');
+}
+
+function toggleFav(){
+  const ov=document.getElementById('favOverlay');
+  const open=ov.classList.toggle('open');
+  document.body.style.overflow=open?'hidden':'';
+}
+
+function handleFavOverlay(e){
+  if(e.target===document.getElementById('favOverlay')) toggleFav();
+}
+
+// ── CONTACT FORM ──
+function sendContactForm(){
+  const name=document.getElementById('ctName').value.trim();
+  const tel=document.getElementById('ctTel').value.trim();
+  const email=document.getElementById('ctEmail').value.trim();
+  const subject=document.getElementById('ctSubject').value;
+  const message=document.getElementById('ctMessage').value.trim();
+  if(!name||!tel||!email||!message){ toast('⚠️ Veuillez remplir tous les champs !'); return; }
+
+  const mailSubject = `[Soltex] ${subject} - ${name}`;
+  const mailBody =
+`Nouveau message depuis le site Soltex
+
+Nom : ${name}
+Téléphone : ${tel}
+Email : ${email}
+Sujet : ${subject}
+
+Message :
+${message}`;
+
+  const mailtoLink = `mailto:rasolofonirainytokiniaina@gmail.com?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
+  window.location.href = mailtoLink;
+
+  toast(`✅ Ouverture de votre messagerie...`);
+  document.getElementById('ctName').value='';
+  document.getElementById('ctTel').value='';
+  document.getElementById('ctEmail').value='';
+  document.getElementById('ctMessage').value='';
+}
+
+// ── CART ──
+function addToCart(p,qty){
+  const ex=cartItems.find(i=>i.product.id===p.id);
+  ex ? ex.qty+=qty : cartItems.push({product:p,qty});
+  renderCart();
+}
+function removeFromCart(id){ cartItems=cartItems.filter(i=>i.product.id!==id); renderCart(); }
+function changeCartQty(id,d){
+  const item=cartItems.find(i=>i.product.id===id);
+  if(!item) return;
+  item.qty=Math.max(1,item.qty+d);
+  if(item.qty===0) removeFromCart(id); else renderCart();
+}
+function renderCart(){
+  const total=cartItems.reduce((s,i)=>s+i.product.price*i.qty,0);
+  const count=cartItems.reduce((s,i)=>s+i.qty,0);
+  document.getElementById('cartCount').textContent=count;
+  document.getElementById('cartSub').textContent=`${count} article${count!==1?'s':''}`;
+  const body=document.getElementById('cartBody');
+  const foot=document.getElementById('cartFoot');
+  if(!cartItems.length){
+    body.innerHTML='';
+    const emp=document.getElementById('cartEmpty')||document.createElement('div');
+    emp.id='cartEmpty'; emp.className='cart-empty-state';
+    emp.innerHTML='<div style="font-size:3rem;margin-bottom:1rem">🛒</div><div style="font-weight:700;color:var(--g800);margin-bottom:.4rem">Panier vide</div><div style="font-size:.83rem;color:var(--g400)">Ajoutez des produits pour commencer</div>';
+    body.appendChild(emp);
+    foot.style.display='none'; return;
+  }
+  foot.style.display='block';
+  body.innerHTML=cartItems.map(i=>`
+    <div class="cart-item-row">
+      <div class="cart-item-icon"><img src="${i.product.imgs[0]}" alt="${i.product.name}"/></div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${i.product.name}</div>
+        <div class="cart-item-price">$${(i.product.price*i.qty).toFixed(2)}</div>
+        <div class="cart-item-qty-row">
+          <button class="cq-btn" onclick="changeCartQty(${i.product.id},-1)">−</button>
+          <span class="cq-num">${i.qty}</span>
+          <button class="cq-btn" onclick="changeCartQty(${i.product.id},1)">+</button>
+        </div>
+      </div>
+      <button class="cart-item-del" onclick="removeFromCart(${i.product.id})">🗑</button>
+    </div>`).join('');
+  const ship=total>=200?0:15;
+  document.getElementById('cartSubtotal').textContent=`$${total.toFixed(2)}`;
+  document.getElementById('cartShip').textContent=total>=200?'🎉 Gratuite':`$${ship}`;
+  document.getElementById('cartTotal').textContent=`$${(total+ship).toFixed(2)}`;
+}
+function toggleCart(){
+  const ov=document.getElementById('cartOverlay');
+  const open=ov.classList.toggle('open');
+  document.body.style.overflow=open?'hidden':'';
+}
+function handleCartOverlay(e){ if(e.target===document.getElementById('cartOverlay')) toggleCart(); }
+
+// ── CHECKOUT ──
+function openCheckout(){
+  if(!cartItems.length){ toast('⚠️ Panier vide !'); return; }
+  toggleCart();
+  setTimeout(()=>{ currentStep=1; renderStep(1); document.getElementById('coOverlay').classList.add('open'); document.body.style.overflow='hidden'; },350);
+}
+function closeCheckout(){ document.getElementById('coOverlay').classList.remove('open'); document.body.style.overflow=''; }
+function goStep(n){
+  if(n===2){
+    const v=['fPrenom','fNom','fTel','fAdresse','fVille'].map(id=>document.getElementById(id).value.trim());
+    if(v.some(x=>!x)){ toast('⚠️ Veuillez remplir tous les champs !'); return; }
+    const total=cartItems.reduce((s,i)=>s+i.product.price*i.qty,0);
+    const ship=total>=200?0:15;
+    document.getElementById('coSumItems').innerHTML=
+      cartItems.map(i=>`<div class="co-sum-item"><span>${i.product.icon} ${i.product.name} ×${i.qty}</span><span>$${(i.product.price*i.qty).toFixed(2)}</span></div>`).join('')+
+      `<div class="co-sum-item"><span>🚚 Livraison</span><span>${ship===0?'🎉 Gratuite':'$'+ship}</span></div>`;
+    document.getElementById('coSumTotal').textContent=`$${(total+ship).toFixed(2)}`;
+    selPay(selectedPay);
+  }
+  currentStep=n; renderStep(n);
+}
+function renderStep(n){
+  [1,2,3].forEach(i=>{
+    document.getElementById(`coStep${i}`).style.display=i===n?'block':'none';
+    const s=document.getElementById(`cs${i}`);
+    const c=document.getElementById(`cc${i}`);
+    s.className='co-step'+(i===n?' active':i<n?' done':'');
+    c.textContent=i<n?'✓':i;
+  });
+  document.getElementById('cl1').className='co-step-line'+(n>1?' done':'');
+  document.getElementById('cl2').className='co-step-line'+(n>2?' done':'');
+}
+function selPay(m){
+  selectedPay=m;
+  ['mvola','orange','airtel','cash'].forEach(x=>document.getElementById(`po_${x}`).classList.toggle('sel',x===m));
+  const colors={mvola:'#EFF6FF',orange:'#FFF7ED',airtel:'#FFF1F2',cash:'#F0FDF4'};
+  const borders={mvola:'#BFDBFE',orange:'#FED7AA',airtel:'#FECACA',cash:'#BBF7D0'};
+  let html='';
+  if(m==='cash'){
+    html=`<div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:.8rem 1rem;font-size:.83rem;color:#166534">💵 <strong>Paiement à la livraison</strong> — Préparez le montant exact. Notre livreur passera sous 24–48h.</div>`;
+  } else {
+    const labels={mvola:'MVola (Telma)',orange:'Orange Money',airtel:'Airtel Money'};
+    const ph={mvola:'034 XX XXX XX',orange:'032 XX XXX XX',airtel:'033 XX XXX XX'};
+    html=`<div style="background:${colors[m]};border:1px solid ${borders[m]};border-radius:10px;padding:.8rem 1rem;font-size:.83rem;color:var(--g700);margin-bottom:.6rem">
+      📱 <strong>${labels[m]}</strong> — Saisissez votre numéro pour recevoir la demande de paiement.</div>
+      <div class="form-group">
+        <label class="form-label">Votre numéro ${labels[m]}</label>
+        <input class="form-input" id="fPayNum" placeholder="${ph[m]}" style="border-color:${borders[m]}"/>
+      </div>`;
+  }
+  document.getElementById('payInputZone').innerHTML=html;
+}
+function confirmOrder(){
+  if(selectedPay!=='cash'){
+    const n=document.getElementById('fPayNum');
+    if(!n||!n.value.trim()){ toast('⚠️ Entrez votre numéro de paiement !'); return; }
+  }
+  const ref='#SM-'+Math.floor(100000+Math.random()*900000);
+  document.getElementById('coRef').textContent=ref;
+
+  // données
+  const prenom=document.getElementById('fPrenom').value;
+  const nom=document.getElementById('fNom').value;
+  const tel=document.getElementById('fTel').value;
+  const adresse=document.getElementById('fAdresse').value;
+  const ville=document.getElementById('fVille').value;
+  const cp=document.getElementById('fCp').value;
+  const payNames={mvola:'MVola (Telma)',orange:'Orange Money',airtel:'Airtel Money',cash:'Espèces à la livraison'};
+  const payNum=selectedPay!=='cash'?document.getElementById('fPayNum')?.value:'N/A';
+  const total=cartItems.reduce((s,i)=>s+i.product.price*i.qty,0);
+  const ship=total>=200?0:15;
+  const grand=total+ship;
+  const itemsList=cartItems.map(i=>`${i.product.icon} ${i.product.name} ×${i.qty} = $${(i.product.price*i.qty).toFixed(2)}`).join('\n');
+
+  // affichage confirmation
+  document.getElementById('coConfLiv').innerHTML=`<strong>${prenom} ${nom}</strong><br>📞 ${tel}<br>📍 ${adresse}, ${ville} ${cp}`;
+  document.getElementById('coConfPay').innerHTML=`<strong>${payNames[selectedPay]}</strong>${payNum&&payNum!=='N/A'?`<br>📱 ${payNum}`:''}`;
+  document.getElementById('coConfItems').innerHTML=cartItems.map(i=>`
+    <div style="display:flex;justify-content:space-between;padding:.2rem 0;border-bottom:1px solid var(--g200)">
+      <span>${i.product.icon} ${i.product.name} ×${i.qty}</span>
+      <span style="font-weight:700">$${(i.product.price*i.qty).toFixed(2)}</span>
+    </div>`).join('')+`<div style="display:flex;justify-content:space-between;font-size:.8rem;color:var(--g400);padding:.2rem 0"><span>🚚 Livraison</span><span>${ship===0?'Gratuite':'$'+ship}</span></div>`;
+  document.getElementById('coConfTotal').innerHTML=`<div style="display:flex;justify-content:space-between">Total payé <span>$${grand.toFixed(2)}</span></div>`;
+
+  // ── ENVOI EMAIL (mailto) ──
+  const mailSubject = `Nouvelle commande ${ref} - Soltex`;
+  const mailBody =
+`Bonjour,
+
+Nouvelle commande reçue sur Soltex !
+
+📦 Référence : ${ref}
+📅 Date : ${new Date().toLocaleString('fr-FR')}
+
+CLIENT
+Nom : ${prenom} ${nom}
+Téléphone : ${tel}
+Adresse : ${adresse}, ${ville} ${cp}
+
+PAIEMENT
+Mode : ${payNames[selectedPay]}
+Numéro : ${payNum || 'N/A'}
+
+ARTICLES
+${itemsList}
+
+Sous-total : $${total.toFixed(2)}
+Livraison : ${ship===0?'Gratuite':'$'+ship}
+TOTAL : $${grand.toFixed(2)}`;
+
+  const mailtoLink = `mailto:rasolofonirainytokiniaina@gmail.com?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
+  window.location.href = mailtoLink;
+
+  currentStep=3; renderStep(3);
+}
+function finishCheckout(){
+  closeCheckout(); cartItems=[];
+  renderCart(); toast('🎉 Merci pour votre commande !');
+}
+
+// ── TOAST ──
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.innerHTML=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ── WHY SLIDESHOW ──
+let whyIdx = 0;
+let whyTimer = null;
+const whySlideCount = 5;
+
+function whyRender(){
+  document.querySelectorAll('.why-slide').forEach((s,i)=>s.classList.toggle('active', i===whyIdx));
+  const dotsEl = document.getElementById('whyDots');
+  if(dotsEl.children.length === 0){
+    dotsEl.innerHTML = Array.from({length:whySlideCount}).map((_,i)=>
+      `<div class="why-dot${i===0?' active':''}" onclick="whyGoTo(${i})"></div>`).join('');
+  } else {
+    document.querySelectorAll('.why-dot').forEach((d,i)=>d.classList.toggle('active', i===whyIdx));
+  }
+}
+function whyNext(){ whyIdx=(whyIdx+1)%whySlideCount; whyRender(); whyResetTimer(); }
+function whyPrev(){ whyIdx=(whyIdx-1+whySlideCount)%whySlideCount; whyRender(); whyResetTimer(); }
+function whyGoTo(i){ whyIdx=i; whyRender(); whyResetTimer(); }
+function whyResetTimer(){
+  clearInterval(whyTimer);
+  whyTimer = setInterval(whyNext, 4000);
+}
+whyRender();
+whyResetTimer();
+
+// ── VIDEO MODAL ──
+function openVideoModal(){
+  document.getElementById('videoOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+  document.getElementById('heroVideo').play();
+}
+function closeVideoModal(){
+  document.getElementById('videoOverlay').classList.remove('open');
+  document.body.style.overflow='';
+  document.getElementById('heroVideo').pause();
+  document.getElementById('heroVideo').currentTime=0;
+}
+
+// ── PRODUITS BANNER SLIDESHOW ──
+let pbIdx=0, pbTimer=null;
+const pbCount=3;
+function pbRender(){
+  document.querySelectorAll('.pb-slide').forEach((s,i)=>s.classList.toggle('active',i===pbIdx));
+  document.querySelectorAll('.pb-dot').forEach((d,i)=>d.classList.toggle('active',i===pbIdx));
+}
+function pbGoTo(i){ pbIdx=i; pbRender(); pbReset(); }
+function pbReset(){ clearInterval(pbTimer); pbTimer=setInterval(()=>{ pbIdx=(pbIdx+1)%pbCount; pbRender(); },4000); }
+pbRender(); pbReset();
+
+// ── INIT ──
+renderProducts();
+renderCart();
+</script>
+</body>
+</html>
